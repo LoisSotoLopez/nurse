@@ -14,6 +14,7 @@ defmodule Nurse.Leader do
   # -------------------------------------------------------------------------------
   @impl true
   def init(table) do
+    :dets.open_file( table, [])
     {:ok, table}
   end
 
