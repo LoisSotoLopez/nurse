@@ -1,5 +1,6 @@
 defmodule Nurse.Healthcheck do
   defstruct [
+    :name,
     :health_status,
     :endpoint,
     :request,
@@ -16,10 +17,11 @@ defmodule Nurse.Healthcheck do
   def new(), do: %Nurse.Healthcheck{}
 
   def from_tuple(
-        {health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
+        {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
          response_condition, health_condition, retry_condition}
       ),
       do: %Nurse.Healthcheck{
+        name: name,
         health_status: health_status,
         endpoint: endpoint,
         request: request,
@@ -32,6 +34,7 @@ defmodule Nurse.Healthcheck do
       }
 
   def to_tuple(%Nurse.Healthcheck{
+        name: name,
         health_status: health_status,
         endpoint: endpoint,
         request: request,
@@ -43,7 +46,7 @@ defmodule Nurse.Healthcheck do
         retry_condition: retry_condition
       }),
       do:
-        {health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
+        {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
          response_condition, health_condition, retry_condition}
 
   def update(healthcheck, {key, value}), do: Map.put(healthcheck, key, value)

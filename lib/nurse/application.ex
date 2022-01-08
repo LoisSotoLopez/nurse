@@ -2,38 +2,19 @@ defmodule Nurse.Application do
   @moduledoc false
   use Application
 
-  alias Nurse.Dets
-  alias Nurse.Healthcheck
-
   require Nurse
 
   def start(_type, _args) do
-    base_children = [
+    children = [
       # Start the Telemetry supervisor
       NurseWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Nurse.PubSub},
       # Start the Endpoint (http/https)
-      NurseWeb.Endpoint
+      NurseWeb.Endpoint,
+      # Start the Leader
+      {Nurse.Leader, Nurse.table()}
     ]
-
-    Nurse.table()
-    |> Dets.open_or_create()
-
-    healthchecks =
-      Nurse.table()
-      |> Dets.table_to_list()
-      |> Enum.map(fn tuple ->
-        tuple |> Healthcheck.from_tuple() |> Healthcheck.update({:health_status, :starting})
-      end)
-
-    workers =
-      healthchecks
-      |> Enum.map(fn healthcheck ->
-        {Nurse.Worker, healthcheck}
-      end)
-
-    children = base_children ++ workers
 
     opts = [strategy: :one_for_one, name: Nurse.Supervisor]
     Supervisor.start_link(children, opts)
