@@ -245,7 +245,6 @@ defmodule Nurse.CondMap do
     case params do
       map when map == %{} ->
         false
-
       _ ->
         true
     end

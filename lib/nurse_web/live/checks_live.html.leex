@@ -30,9 +30,10 @@
     <div class="checks_table_header">
       <div class="checks_head_row">
         <div class="check_cell" id="check_status">Status</div>
-        <div class="check_cell" id="check_reference">Reference</div>
-        <div class="check_cell" id="check_reference_by_user">Check Name</div>
+        <div class="check_cell" id="check_name">Name</div>
+        <div class="check_cell" id="check_method">Method</div>
         <div class="check_cell" id="check_endpoint">Endpoint</div>
+        <div class="check_cell" id="check_interval">Periodicity</div>
         <div class="check_cell, check_button_cell" id="check_button_on_off">
           Switch On/Off
         </div>
@@ -44,10 +45,11 @@
     <div class="checks_table_body">
       <%= for check <- @checks_list do %>
       <div class="checks_row">
-        <div class="check_cell" id="check_status"><%= check.status %></div>
-        <div class="check_cell" id="check_reference">reference</div>
-        <div class="check_cell" id="check_reference_by_user">reference by user</div>
-        <div class="check_cell" id="check_endpoint">endpoint</div>
+        <div class="check_cell" id="check_status"><%= check.health_status %></div>
+        <div class="check_cell" id="check_name"><%= check.name %></div>
+        <div class="check_cell" id="check_method"><%= check.method %></div>
+        <div class="check_cell" id="check_endpoint"><%= check.scheme %>://<%= check.hostname %>:<%= check.eport %></div>
+        <div class="check_cell" id="check_interval"><%= check.evaluation_interval %></div>
         <div class="check_cell, check_button_cell" id="check_button_configure">
           <a href="/checks/id">Configure</a>
         </div>
