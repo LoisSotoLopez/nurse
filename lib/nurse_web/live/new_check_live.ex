@@ -1,5 +1,9 @@
 defmodule NurseWeb.NewCheckLive do
   use NurseWeb, :live_view
+
+  alias Nurse.Healthcheck
+  alias NurseWeb.Client
+
   require Logger
 
   def mount(_params, _session, socket) do
@@ -7,9 +11,11 @@ defmodule NurseWeb.NewCheckLive do
       assign(socket, new_condition_type: "none")
       |> assign(condition_map: %{})
       |> assign(check_params: %{
+        :check_name => "",
         :check_delay => "",
         :connection_timeout => "",
         :evaluation_interval => "",
+        :request_method => "",
         :request_body => "",
         :request_header => "",
         :request_hostname => "",
@@ -816,9 +822,11 @@ defmodule NurseWeb.NewCheckLive do
   def handle_event(
     "save_check_configuration",
     %{
+      "check_name" => check_name,
       "check_delay" => check_delay,
       "connection_timeout" => connection_timeout,
       "evaluation_interval" => evaluation_interval,
+      "request_method" => request_method,
       "request_body" => request_body,
       "request_header" => request_header,
       "request_hostname" => request_hostname,
@@ -829,9 +837,11 @@ defmodule NurseWeb.NewCheckLive do
     socket
   ) do
     params = %{
+      :check_name => check_name,
       :check_delay => check_delay,
       :connection_timeout => connection_timeout,
       :evaluation_interval => evaluation_interval,
+      :request_method => request_method,
       :request_body => request_body,
       :request_header => request_header,
       :request_hostname => request_hostname,
@@ -858,6 +868,37 @@ defmodule NurseWeb.NewCheckLive do
             {:noreply, socket}
 
           true ->
+            %{
+              "check_name" => check_name,
+              "check_delay" => check_delay,
+              "connection_timeout" => connection_timeout,
+              "evaluation_interval" => evaluation_interval,
+              "request_method" => request_method,
+              "request_body" => request_body,
+              "request_header" => request_header,
+              "request_hostname" => request_hostname,
+              "request_port" => request_port,
+              "request_scheme" => request_scheme,
+              "response_timeout" => response_timeout,
+              "retry_delay" => retry_delay
+            } = params
+            health_condition = []
+            retry_condition = []
+            response_condition = socket.assigns.condition_map
+            {check_name,
+             :starting,
+             {request_scheme, request_hostname, request_port},
+             {request_method, request_header, request_body},
+             check_delay,
+             retry_delay,
+             connection_timeout,
+             evaluation_interval,
+             response_condition,
+             response_timeout,
+             health_condition,
+             retry_condition}
+            |>Healthcheck.from_tuple()
+            |>Client.create
             {:noreply, redirect(socket, to: "/all-checks")}
         end
 

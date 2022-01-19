@@ -34,9 +34,6 @@
         <div class="check_cell" id="check_method">Method</div>
         <div class="check_cell" id="check_endpoint">Endpoint</div>
         <div class="check_cell" id="check_interval">Periodicity</div>
-        <div class="check_cell, check_button_cell" id="check_button_on_off">
-          Switch On/Off
-        </div>
         <div class="check_cell, check_button_cell" id="check_button_configure">
           Configure
         </div>
@@ -52,9 +49,6 @@
         <div class="check_cell" id="check_interval"><%= check.evaluation_interval %></div>
         <div class="check_cell, check_button_cell" id="check_button_configure">
           <a href="/checks/id">Configure</a>
-        </div>
-        <div class="check_cell, check_button_cell" id="check_button_on_off">
-          <button class="check_switch_button" phx-click="switch_check" phx-value-switch-ref="<%= check.check_reference %>">Turn <%= check.switch_action %> </button>
         </div>
       </div>
       <% end %>

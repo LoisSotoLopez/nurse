@@ -37,7 +37,7 @@ defmodule NurseWeb.ChecksLive do
   def handle_info(:update, socket) do
     Process.send_after(self(), :update, socket.assigns.pannel_refresh_time * 1000)
 
-    socket = 
+    socket =
       assign(socket, checks_list: obtain_checks_summary_list())
 
     {:noreply, socket}
@@ -66,7 +66,7 @@ defmodule NurseWeb.ChecksLive do
     %{"check-ref" => check_ref},
     socket
   ) do
-    
+
   end
 
   ###------------------------
@@ -89,18 +89,15 @@ defmodule NurseWeb.ChecksLive do
     Client.get_all()
     |> Enum.map(fn ( table_row ) -> hc_to_hcsummary( table_row ) end )
     |> Enum.sort(
-        fn x, y -> 
-          case String.compare(x.name, y.name) do
-            :lt -> true
-            _ -> false
-          end
+        fn x, y ->
+          x.name < y.name
         end
       )
   end
 
   @spec hc_to_hcsummary( { Nurse.uuid(), pid(), Nurse.Healthcheck.t() } ) :: HealthcheckSummary.t()
-  defp hc_to_hcsummary( 
-    { 
+  defp hc_to_hcsummary(
+    {
       id,
       _pid,
       %Healthcheck{
@@ -110,7 +107,7 @@ defmodule NurseWeb.ChecksLive do
         request: {method, _headers, _body},
         evaluation_interval: evaluation_interval
       }
-    } 
+    }
   ) do
     HealthcheckSummary.from_tuple(
       {

@@ -6,7 +6,7 @@ defmodule NurseWeb.Client do
 
   @spec create( Nurse.Healthcheck.t() ) :: :ok
   def create( healthcheck ) do
-    GenServer.cast( Nurse.Leader, {:create, healthcheck} )
+    GenServer.cast( Nurse.Leader, {:create, [healthcheck]} )
   end
 
   @spec remove( Nurse.uuid() ) :: :ok

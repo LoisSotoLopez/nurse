@@ -13,16 +13,39 @@
     <form for={@changeset}, phx-submit="submit_check_configuration", phx-change="save_check_configuration">
     <section class="row, container">
         <div class="pannel_head">
+            <h4>General configuration</h4>
+        </div>
+        <div class="pannel_body">
+            <div class="check_inline_option">
+                <div class="tooltip">
+                    <span class="tooltip_text">Text</span>
+                    <p>Check name </p>
+                </div>
+                <input type="text" class="nexto_text" id="check_name" name="check_name" value="<%= @check_params.check_name %>"/>
+            </div>
+        </div>
+    </section>
+    <section class="row, container">
+        <div class="pannel_head">
             <h4>Request Parameters</h4>
         </div>
 
         <div class="pannel_body">
+
             <div class="check_inline_option">
                 <div class="tooltip">
                     <span class="tooltip_text">Text</span>
                     <p>Scheme </p>
                 </div>
                 <input type="text" class="nexto_text" id="request_scheme" name="request_scheme" value="<%= @check_params.request_scheme %>"/>
+            </div>
+
+            <div class="check_inline_option">
+                <div class="tooltip">
+                    <span class="tooltip_text">Text</span>
+                    <p>Request method </p>
+                </div>
+                <input type="text" class="nexto_text" id="request_method" name="request_method" value="<%= @check_params.request_method %>"/>
             </div>
 
             <div class="check_inline_option">
