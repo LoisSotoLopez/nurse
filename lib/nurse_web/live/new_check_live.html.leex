@@ -10,126 +10,15 @@
     <div class="pannel_head">
         <h3>Create New Check</h3>
     </div>
-    <form for={@changeset}, phx-submit="submit_check_configuration", phx-change="save_check_configuration">
-    <section class="row, container">
-        <div class="pannel_head">
-            <h4>General configuration</h4>
-        </div>
-        <div class="pannel_body">
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Check name </p>
-                </div>
-                <input type="text" class="nexto_text" id="check_name" name="check_name" value="<%= @check_params.check_name %>"/>
-            </div>
-        </div>
-    </section>
-    <section class="row, container">
-        <div class="pannel_head">
-            <h4>Request Parameters</h4>
-        </div>
 
-        <div class="pannel_body">
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Scheme </p>
-                </div>
-                <input type="text" class="nexto_text" id="request_scheme" name="request_scheme" value="<%= @check_params.request_scheme %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Request method </p>
-                </div>
-                <input type="text" class="nexto_text" id="request_method" name="request_method" value="<%= @check_params.request_method %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Hostname </p>
-                </div>
-                <input type="text" class="nexto_text" id="request_hostname" name="request_hostname" value="<%= @check_params.request_hostname %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Port </p>
-                </div>
-                <input type="text" class="nexto_text" id="request_port" name="request_port" value="<%= @check_params.request_port %>"/>
-            </div>
-
-            <div class="check_inblock_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Request Headers</p>
-                </div>
-                <div class="check_inline_option">
-                    <input type="text" class="nexto_text" id="request_header" name="request_header" value="<%= @check_params.request_header %>" placeholder="Headers"/>
-
-                </div>
-            </div>
-
-            <div class="check_inblock_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Request Body</p>
-                </div>
-                <textarea rows="15" cols="75" id="request_body" name="request_body"  style="width:auto;height:auto"><%= @check_params.request_body %></textarea>
-            </div>
-        </div>
-    </section>
+    <form for={@changeset}, phx-submit="submit_check_configuration">
 
     <section class="row, container">
         <div class="pannel_head">
-            <h4>Checking parameters</h4>
+            <h4>Yaml configuration input</h4>
         </div>
         <div class="pannel_body">
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Evaluation Interval </p>
-                </div>
-                <input type="text" class="nexto_text" id="evaluation_interval" name="evaluation_interval" value="<%= @check_params.evaluation_interval %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Check Delay </p>
-                </div>
-                <input type="text" class="nexto_text" id="check_delay" name="check_delay" value="<%= @check_params.check_delay %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Retry Delay </p>
-                </div>
-                <input type="text" class="nexto_text" id="retry_delay" name="retry_delay" value="<%= @check_params.retry_delay %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Response Timeout </p>
-                </div>
-                <input type="text" class="nexto_text" id="response_timeout" name="response_timeout" value="<%= @check_params.response_timeout %>"/>
-            </div>
-
-            <div class="check_inline_option">
-                <div class="tooltip">
-                    <span class="tooltip_text">Text</span>
-                    <p>Connection Timeout </p>
-                </div>
-                <input type="text" class="nexto_text" id="connection_timeout" name="connection_timeout" value="<%= @check_params.connection_timeout %>"/>
-            </div>
-
+            <textarea class="nexto_text" id="yaml_conf" name="yaml_conf"><%= @yaml_conf %></textarea>
         </div>
     </section>
 
@@ -141,12 +30,5 @@
         <h3><%= @bad_input_msg %></h3>
     </section>
     </form>
-
-    <section class="row, container">
-        <div class="pannel_head">
-            <h4>Success conditions</h4>
-        </div>
-        <%= render NurseWeb.CheckConditionView, "condition.html", condition_map: @condition_map , condition_id: 0, condition_side: "none"%>
-    </section>
 
 </section>

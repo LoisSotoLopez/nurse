@@ -1,7 +1,7 @@
 defmodule NurseWeb.Client do
   @server Nurse.Leader
 
-  import Nurse
+  require Nurse
   alias Nurse.Dets
 
   @spec create( Nurse.Healthcheck.t() ) :: :ok

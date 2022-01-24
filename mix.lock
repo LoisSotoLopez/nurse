@@ -35,4 +35,6 @@
   "telemetry_metrics": {:hex, :telemetry_metrics, "0.4.0", "3cc70af1a02f76070c56e95cc1768cf74a0e534306bea906679683d7ceadbbf7", [:mix], [{:telemetry, "~> 0.4", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "532d76f31177343535d08e19179c3c56b2ca36faf708b03ad4c50965982f9ef8"},
   "telemetry_poller": {:hex, :telemetry_poller, "0.4.0", "da64dea54b77604023e8d15dc61a5df8968f4c9e013eba561bfb2bc614b15432", [:rebar3], [], "hexpm", "f3374de85219675fceedd13386a39768c6f5e4b1a439a502da8c7dc142a43367"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.7.0", "bc84380c9ab48177092f43ac89e4dfa2c6d62b40b8bd132b1059ecc7232f9a78", [:rebar3], [], "hexpm", "25eee6d67df61960cf6a794239566599b09e17e668d3700247bc498638152521"},
+  "yamerl": {:hex, :yamerl, "0.9.0", "7a08cdcd96bb417bb46e838db70988475f1da56d73a5cd7c45671e828a2be999", [:rebar3], [], "hexpm", "41df52760645bbfb0d6cb99b214e5382ad390fe9bfc40409b1565d4106fd752b"},
+  "yaml_elixir": {:hex, :yaml_elixir, "2.8.0", "c7ff0034daf57279c2ce902788ce6fdb2445532eb4317e8df4b044209fae6832", [:mix], [{:yamerl, "~> 0.8", [hex: :yamerl, repo: "hexpm", optional: false]}], "hexpm", "4b674bd881e373d1ac6a790c64b2ecb69d1fd612c2af3b22de1619c15473830b"},
 }

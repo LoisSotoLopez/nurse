@@ -45,7 +45,8 @@ defmodule Nurse.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:stream_data, "~> 0.5.0", only: :test},
       {:telemetry_metrics, "~> 0.4"},
-      {:telemetry_poller, "~> 0.4"}
+      {:telemetry_poller, "~> 0.4"},
+      {:yaml_elixir, "~> 2.8"}
     ]
   end
 
