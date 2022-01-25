@@ -10,20 +10,22 @@ defmodule NurseWeb.NewCheckLive do
     socket =
       assign(socket, new_condition_type: "none")
       |> assign(condition_map: %{})
-      |> assign(check_params: %{
-        :check_name => "",
-        :check_delay => "",
-        :connection_timeout => "",
-        :evaluation_interval => "",
-        :request_method => "",
-        :request_body => "",
-        :request_header => "",
-        :request_hostname => "",
-        :request_port => "",
-        :request_scheme => "",
-        :response_timeout => "",
-        :retry_delay => ""
-      })
+      |> assign(
+        check_params: %{
+          :check_name => "",
+          :check_delay => "",
+          :connection_timeout => "",
+          :evaluation_interval => "",
+          :request_method => "",
+          :request_body => "",
+          :request_header => "",
+          :request_hostname => "",
+          :request_port => "",
+          :request_scheme => "",
+          :response_timeout => "",
+          :retry_delay => ""
+        }
+      )
       |> assign(bad_input_msg: "")
 
     {:ok, socket}
@@ -820,22 +822,23 @@ defmodule NurseWeb.NewCheckLive do
 
   # ---
   def handle_event(
-    "save_check_configuration",
-    %{
-      "check_name" => check_name,
-      "check_delay" => check_delay,
-      "connection_timeout" => connection_timeout,
-      "evaluation_interval" => evaluation_interval,
-      "request_method" => request_method,
-      "request_body" => request_body,
-      "request_header" => request_header,
-      "request_hostname" => request_hostname,
-      "request_port" => request_port,
-      "request_scheme" => request_scheme,
-      "response_timeout" => response_timeout,
-      "retry_delay" => retry_delay},
-    socket
-  ) do
+        "save_check_configuration",
+        %{
+          "check_name" => check_name,
+          "check_delay" => check_delay,
+          "connection_timeout" => connection_timeout,
+          "evaluation_interval" => evaluation_interval,
+          "request_method" => request_method,
+          "request_body" => request_body,
+          "request_header" => request_header,
+          "request_hostname" => request_hostname,
+          "request_port" => request_port,
+          "request_scheme" => request_scheme,
+          "response_timeout" => response_timeout,
+          "retry_delay" => retry_delay
+        },
+        socket
+      ) do
     params = %{
       :check_name => check_name,
       :check_delay => check_delay,
@@ -848,7 +851,9 @@ defmodule NurseWeb.NewCheckLive do
       :request_port => request_port,
       :request_scheme => request_scheme,
       :response_timeout => response_timeout,
-      :retry_delay => retry_delay}
+      :retry_delay => retry_delay
+    }
+
     socket = assign(socket, check_params: params)
     {:noreply, socket}
   end
@@ -882,23 +887,18 @@ defmodule NurseWeb.NewCheckLive do
               "response_timeout" => response_timeout,
               "retry_delay" => retry_delay
             } = params
+
             health_condition = []
             retry_condition = []
             response_condition = socket.assigns.condition_map
-            {check_name,
-             :starting,
-             {request_scheme, request_hostname, request_port},
-             {request_method, request_header, request_body},
-             check_delay,
-             retry_delay,
-             connection_timeout,
-             evaluation_interval,
-             response_condition,
-             response_timeout,
-             health_condition,
-             retry_condition}
-            |>Healthcheck.from_tuple()
-            |>Client.create
+
+            {check_name, :starting, {request_scheme, request_hostname, request_port},
+             {request_method, request_header, request_body}, check_delay, retry_delay,
+             connection_timeout, evaluation_interval, response_condition, response_timeout,
+             health_condition, retry_condition}
+            |> Healthcheck.from_tuple()
+            |> Client.create()
+
             {:noreply, redirect(socket, to: "/all-checks")}
         end
 
@@ -942,6 +942,7 @@ defmodule NurseWeb.NewCheckLive do
     case validate_one(key |> String.to_atom(), val) do
       true ->
         validate_multi(t)
+
       _ ->
         {:field, key}
     end

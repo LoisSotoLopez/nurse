@@ -14,7 +14,7 @@ defmodule Nurse.Leader do
   # -------------------------------------------------------------------------------
   @impl true
   def init(table) do
-    Nurse.Dets.open_or_create( table, [] )
+    Nurse.Dets.open_or_create(table, [])
     {:ok, table}
   end
 

@@ -36,6 +36,7 @@ defmodule Nurse.Dets do
   @spec table_to_list(table()) :: [tuple()]
   def table_to_list(table) do
     :dets.open_file(table)
+
     fn x, acc -> [x | acc] end
     |> :dets.foldr([], table)
   end
