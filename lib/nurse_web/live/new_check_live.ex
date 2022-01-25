@@ -11,7 +11,26 @@ defmodule NurseWeb.NewCheckLive do
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
-        yaml_conf: "",
+        yaml_conf: """
+check_name: "my_check"
+check_delay: 10
+connection_timeout: 10
+evaluation_interval: 10
+request_method: GET
+request_body: |
+    { "metric" : "cpu_usage",
+    "unit" : "percent" }
+request_header: |
+    { ContentType: application/json }
+request_hostname: "my_server.com"
+request_port: 8080
+request_scheme: "http"
+response_timeout: 10
+retry_delay: 10
+health_condition: none
+retry_condition: none
+response_condition: none
+""",
         bad_input_msg: "")
     {:ok, socket}
   end

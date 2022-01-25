@@ -16,7 +16,7 @@
 
 /* Checks table */
 .checks_table_body {
-    display: table-row-group;
+    display: inline-block;
 }
 
 .checks_table_header{
@@ -50,11 +50,12 @@
     display:table-cell;
     vertical-align:top;
     margin: 1.0rem 1.0rem 1.0rem 0.0rem;
-
 }
 
+
+
 .check_button_cell {
-    float:right;
+    float:left;
     display:table-cell;
     margin: 1.0rem 1.0rem 1.0rem 0.0rem;
     width: 12.0rem;
@@ -87,63 +88,5 @@
     margin: 1.0rem 1.0rem 1.0rem 0.0rem;
 }
 
-/* Tooltip */
-.tooltip {
-    position: relative;
-    display: inline-block;
-  }
-  
-.tooltip .tooltip_text {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-    top: -5px;
-    right: 110%;
-}
 
-.tooltip .tooltip_text::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 100%;
-    margin-top: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent transparent black;
-}
-.tooltip:hover .tooltip_text {
-    visibility: visible;
-}
-
-
-/* Check parameters */
-.check_inline_option > div{
-    display: inline-block
-}
-
-.check_inline_option > input{
-    width: 20.0rem
-}
-.check_inline_option > div > p{
-    width: 20.0rem
-}
-
-.check_inblock_option > *{
-    display: inline
-}
-
-/* Success conditions */
-.new_success_condition_selector > div{
-    display:inline-block;
-}
-
-.inside_condition {
-    margin-left: 5px
-}
 

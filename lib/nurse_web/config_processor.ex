@@ -12,15 +12,13 @@ defmodule NurseWeb.ConfigProcessor do
           case HealthcheckConfig.from_map(map) do
             {:missing_key, key} ->
               {:error, "Error! Missing configuration for key \"" <> Atom.to_string(key) <> "\""}
-            {:duplicated_key, key} ->
-              {:error, "Error! Duplicated configuration for key \"" <> Atom.to_string(key) <> "\""}
-            {:bad_type, key, _value} ->
-              {:error, "Error! \"" <> Atom.to_string(key) <> "\" has wrong type."}
             config ->
-              config
+              {:ok, config}
           end
-        {:ok, other} ->
+        {:ok, _other} ->
           {:error, "Could not parse a mapping from provided text to a proper configuration."}
+        {:error, error} ->
+          {:error, process_error(error)}
       end
     catch
       {:error, error} ->
@@ -28,6 +26,11 @@ defmodule NurseWeb.ConfigProcessor do
         IO.puts error_str
         {:error, error_str}
     end
+  end
+
+  @spec process_error(any()) :: error()
+  defp process_error(%YamlElixir.ParsingError{column: col, line: line, message: _, type: :unexpected_token}) do
+    "Error! Unexpected token on line " <> Integer.to_string(line) <> ", column " <> Integer.to_string(col) <> "."
   end
 
 end

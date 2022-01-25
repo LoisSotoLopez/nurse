@@ -18,14 +18,11 @@
             <h4>Yaml configuration input</h4>
         </div>
         <div class="pannel_body">
-            <textarea class="nexto_text" id="yaml_conf" name="yaml_conf"><%= @yaml_conf %></textarea>
+            <textarea id="yaml_conf" name="yaml_conf" ><%= @yaml_conf %></textarea>
         </div>
     </section>
 
     <section class="row, container">
-        <div class="pannel_head">
-            <h4>Submit</h4>
-        </div>
         <button type="submit"> Submit check configuration</button>
         <h3><%= @bad_input_msg %></h3>
     </section>
