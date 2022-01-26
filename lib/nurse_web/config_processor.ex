@@ -26,7 +26,6 @@ defmodule NurseWeb.ConfigProcessor do
     catch
       {:error, error} ->
         error_str = "Error! Yaml error: " <> error
-        IO.puts(error_str)
         {:error, error_str}
     end
   end
