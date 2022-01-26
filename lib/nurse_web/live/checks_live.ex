@@ -53,7 +53,7 @@ defmodule NurseWeb.ChecksLive do
 
   def handle_event(
         "switch_check",
-        %{"switch-ref" => to_switch_check_reference, "value" => _value},
+        %{"switch-ref" => _to_switch_check_reference, "value" => _value},
         socket
       ) do
     {:noreply, socket}

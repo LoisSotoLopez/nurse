@@ -1,6 +1,7 @@
 /* This file is for your main application css. */
 @import "./phoenix.css";
 @import "./all_checks.css";
+@import "./new_check.css";
 
 /* LiveView specific classes for your customizations */
 .phx-no-feedback.invalid-feedback,

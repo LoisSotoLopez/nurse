@@ -1,9 +1,0 @@
-<div>
-    <p> Add Checking condition </p>
-    <button phx-click="add_condition"
-            phx-value-condition-type="simple" 
-            phx-value-condition-id="<%= @condition_id %>"
-            phx-value-condition-side="<%= @condition_side %>"> Simple</button>
-    <button phx-click="add_condition" phx-value-condition-type="and" phx-value-condition-id="<%= @condition_id %>" phx-value-condition-side="<%= @condition_side %>" >And Aggregation</button>
-    <button phx-click="add_condition" phx-value-condition-type="or" phx-value-condition-id="<%= @condition_id %>" phx-value-condition-side="<%= @condition_side %>" >Or Aggregation</button>
-</div>
