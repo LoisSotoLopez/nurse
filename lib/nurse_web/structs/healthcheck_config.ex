@@ -49,7 +49,7 @@ defmodule NurseWeb.HealthcheckConfig do
     end
   end
 
-  @spec new() :: map()
+  @spec new() :: t()
   defp new() do
     %HealthcheckConfig{}
   end
