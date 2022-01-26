@@ -46,20 +46,20 @@ defmodule NurseWeb.NewCheckLive do
 
     case ConfigProcessor.process(yaml_conf) do
       {:ok, config} ->
-        {HC.get(config, "check_name"), :starting,
+        {HC.get(config, :check_name), :starting,
          {
-           HC.get(config, "request_scheme"),
-           HC.get(config, "request_hostname"),
-           HC.get(config, "request_port")
+           HC.get(config, :request_scheme),
+           HC.get(config, :request_hostname),
+           HC.get(config, :request_port)
          },
          {
-           HC.get(config, "request_method"),
-           HC.get(config, "request_header"),
-           HC.get(config, "request_body")
-         }, HC.get(config, "check_delay"), HC.get(config, "retry_delay"),
-         HC.get(config, "connection_timeout"), HC.get(config, "evaluation_interval"),
-         HC.get(config, "response_condition"), HC.get(config, "response_timeout"),
-         HC.get(config, "health_condition"), HC.get(config, "retry_condition")}
+           HC.get(config, :request_method),
+           HC.get(config, :request_header),
+           HC.get(config, :request_body)
+         }, HC.get(config, :check_delay), HC.get(config, :retry_delay),
+         HC.get(config, :connection_timeout), HC.get(config, :evaluation_interval),
+         HC.get(config, :response_condition), HC.get(config, :response_timeout),
+         HC.get(config, :health_condition), HC.get(config, :retry_condition)}
         |> Healthcheck.from_tuple()
         |> Client.create()
 
