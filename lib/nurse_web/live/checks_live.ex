@@ -3,7 +3,7 @@ defmodule NurseWeb.ChecksLive do
   import Phoenix.LiveView.Helpers
   require Logger
 
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     Process.send_after(self(), :update, 5000)
 
     socket =
@@ -33,7 +33,7 @@ defmodule NurseWeb.ChecksLive do
 
   def handle_event(
         "switch_check",
-        %{"switch-ref" => to_switch_check_reference, "value" => _value},
+        %{"switch-ref" => _to_switch_check_reference, "value" => _value},
         socket
       ) do
     {:noreply, socket}
