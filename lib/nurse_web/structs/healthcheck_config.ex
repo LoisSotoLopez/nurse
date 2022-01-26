@@ -17,7 +17,7 @@ defmodule NurseWeb.HealthcheckConfig do
     :retry_delay,
     :health_condition,
     :retry_condition,
-    :response_condition,
+    :response_condition
   ]
 
   @type t() :: %NurseWeb.HealthcheckConfig{}
