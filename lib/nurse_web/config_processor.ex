@@ -11,7 +11,7 @@ defmodule NurseWeb.ConfigProcessor do
         {:ok, map} when is_map(map) ->
           case HealthcheckConfig.from_map(map) do
             {:missing_key, key} ->
-              {:error, "Error! Missing configuration for key \"" <> Atom.to_string(key) <> "\""}
+              {:error, "Error! Missing configuration for key \"" <> key <> "\""}
 
             config ->
               {:ok, config}
