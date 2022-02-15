@@ -29,7 +29,7 @@ defmodule NurseWeb.HealthcheckConfig do
     Map.get(map, key, nil)
   end
 
-  @spec from_map(Map.t()) :: t() | {:error, tuple()}
+  @spec from_map(map :: map()) :: t() | {:error, tuple()}
   def from_map(map) do
     fold_fun = fn key, acc ->
       key_str = Atom.to_string(key)
