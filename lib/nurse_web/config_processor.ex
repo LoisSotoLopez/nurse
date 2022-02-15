@@ -10,8 +10,8 @@ defmodule NurseWeb.ConfigProcessor do
       case YamlElixir.read_from_string(yaml) do
         {:ok, map} when is_map(map) ->
           case HealthcheckConfig.from_map(map) do
-            {:missing_key, key} ->
-              {:error, "Error! Missing configuration for key \"" <> key <> "\""}
+            {:error, err} ->
+              {:error, process_error(err)}
 
             config ->
               {:ok, config}
@@ -20,8 +20,8 @@ defmodule NurseWeb.ConfigProcessor do
         {:ok, _other} ->
           {:error, "Could not parse a mapping from provided text to a proper configuration."}
 
-        {:error, error} ->
-          {:error, process_error(error)}
+        {:error, err} ->
+          {:error, process_error(err)}
       end
     catch
       {:error, error} ->
@@ -30,7 +30,7 @@ defmodule NurseWeb.ConfigProcessor do
     end
   end
 
-  @spec process_error(any()) :: error()
+  @spec process_error(tuple() | term()) :: error()
   defp process_error(%YamlElixir.ParsingError{
          column: col,
          line: line,
@@ -39,5 +39,17 @@ defmodule NurseWeb.ConfigProcessor do
        }) do
     "Error! Unexpected token on line " <>
       Integer.to_string(line) <> ", column " <> Integer.to_string(col) <> "."
+  end
+
+  defp process_error({:bad_input, key, value}) do
+    "Error! Value \"#{value}\" for key \"#{key}\" is of wrong type"
+  end
+
+  defp process_error({:missing_key, key}) do
+    "Error! Missing configuration for key \"#{key}\""
+  end
+
+  defp process_error({:bad_config, key, val}) do
+    "Error! Either key \"#{key}\" was not expected or value \"#{val}\" is not a valid for such key."
   end
 end
