@@ -1,10 +1,6 @@
 defmodule NurseWeb do
   alias Nurse
 
-  @server :nurse_web_server
-
-  defmacro server, do: @server
-
   def controller do
     quote do
       use Phoenix.Controller, namespace: NurseWeb

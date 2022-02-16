@@ -17,8 +17,26 @@ defmodule Nurse.Dets do
     end
   end
 
+  @spec lookup(table(), term()) :: [tuple()] | :error
+  def lookup(table, key) do
+    case :dets.lookup(table, key) do
+      {:error, _reason} -> :error
+      values -> values
+    end
+  end
+
+  @spec delete(table(), term()) :: :ok | :error
+  def delete(table, key) do
+    case :dets.delete(table, key) do
+      {:error, _reason} -> :error
+      _ok -> :ok
+    end
+  end
+
   @spec table_to_list(table()) :: [tuple()]
   def table_to_list(table) do
+    :dets.open_file(table)
+
     fn x, acc -> [x | acc] end
     |> :dets.foldr([], table)
   end

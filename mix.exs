@@ -32,6 +32,7 @@ defmodule Nurse.MixProject do
     [
       {:bypass, "~> 2.1", only: :test},
       {:dialyxir, "~> 1.1.0", only: [:dev, :test], runtime: false},
+      {:elixir_uuid, "~> 1.2"},
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.11"},
       {:httpoison, "~> 1.8"},
