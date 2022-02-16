@@ -24,12 +24,24 @@ defmodule NurseWeb.NewCheckLive do
             { ContentType: application/json }
         request_hostname: "my_server.com"
         request_port: 8080
-        request_scheme: "http"
+        request_scheme: "HTTP"
         response_timeout: 10
         retry_delay: 10
-        health_condition: none
-        retry_condition: none
-        response_condition: none
+        health_condition: {
+          successful_probes_match: {
+            pos_integer_gte: 3
+          }
+        }
+        retry_condition: {
+          failed_probes_match : {
+            pos_integer_lte : 3
+          }
+        }
+        response_condition: {
+          status_code_match : {
+            code_equal: 200
+          }
+        }
         """,
         bad_input_msg: ""
       )
@@ -60,8 +72,9 @@ defmodule NurseWeb.NewCheckLive do
          HC.get(config, :connection_timeout), HC.get(config, :evaluation_interval),
          HC.get(config, :response_condition), HC.get(config, :response_timeout),
          HC.get(config, :health_condition), HC.get(config, :retry_condition)}
-        |> Healthcheck.from_tuple()
-        |> Client.create()
+
+        # |> Healthcheck.from_tuple()
+        # |> Client.create()
 
         {:noreply, redirect(socket, to: "/all-checks")}
 
