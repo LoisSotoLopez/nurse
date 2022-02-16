@@ -5,7 +5,6 @@ defmodule Nurse.Worker do
   alias Nurse.Healthcheck
 
   require Nurse
-  require NurseWeb
 
   @spec start_link(Nurse.healthcheck()) :: no_return()
   def start_link(healthcheck) do
@@ -17,9 +16,6 @@ defmodule Nurse.Worker do
     do: state |> listen_for_updates() |> run()
 
   defp run(state) do
-    NurseWeb.server()
-    |> GenServer.cast({Kernel.self(), state})
-
     probes =
       state.evaluation_interval
       |> Enum.map(fn _i ->

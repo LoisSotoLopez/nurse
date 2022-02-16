@@ -6,11 +6,12 @@ defmodule Nurse.Test.Structs.Healthcheck do
 
   describe "Nurse.Structs.Healthcheck" do
     test "creates a new struct" do
-      assert Nurse.Healthcheck.new() |> is_struct(Nurse.Healthcheck)
+      assert Nurse.Healthcheck.new() |> Kernel.is_struct(Nurse.Healthcheck)
     end
 
     property "creates a proper struct from a tuple" do
       check all(
+              name <- Generators.name(),
               health_status <- Generators.health_status(),
               endpoint <- Generators.endpoint(),
               request <- Generators.request(),
@@ -22,6 +23,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
               retry_condition <- Generators.retry_condition()
             ) do
         healthcheck = %Nurse.Healthcheck{
+          name: name,
           health_status: health_status,
           endpoint: endpoint,
           request: request,
@@ -34,7 +36,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
         }
 
         tuple =
-          {health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
+          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
            response_condition, health_condition, retry_condition}
 
         assert tuple |> Nurse.Healthcheck.from_tuple() == healthcheck
@@ -44,6 +46,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
     property "creates a proper tuple from a struct" do
       check all(healthcheck <- Generators.healthcheck()) do
         %Nurse.Healthcheck{
+          name: name,
           health_status: health_status,
           endpoint: endpoint,
           request: request,
@@ -56,7 +59,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
         } = healthcheck
 
         tuple =
-          {health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
+          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
            response_condition, health_condition, retry_condition}
 
         assert Nurse.Healthcheck.to_tuple(healthcheck) == tuple
@@ -72,6 +75,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
 
     property "there and back again (tuple first)" do
       check all(
+              name <- Generators.name(),
               health_status <- Generators.health_status(),
               endpoint <- Generators.endpoint(),
               request <- Generators.request(),
@@ -83,7 +87,7 @@ defmodule Nurse.Test.Structs.Healthcheck do
               retry_condition <- Generators.retry_condition()
             ) do
         tuple =
-          {health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
+          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
            response_condition, health_condition, retry_condition}
 
         assert tuple == tuple |> Nurse.Healthcheck.from_tuple() |> Nurse.Healthcheck.to_tuple()

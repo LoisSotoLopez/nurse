@@ -7,11 +7,15 @@ defmodule Nurse do
 
   defmacro table, do: @table
 
+  @type uuid :: String.t()
+  @type name :: String.t()
+  @type table :: atom()
+
   @type check_delay :: pos_integer()
   @type retry_delay :: pos_integer()
   @type evaluation_interval :: pos_integer()
 
-  @type health_status :: :unknown | :starting | :healthy | :retrying | :unhealthy | :stopped
+  @type health_status :: :starting | :healthy | :retrying | :unhealthy | :stopped
 
   @type endpoint :: {scheme(), hostname(), eport()}
   @type scheme :: :http

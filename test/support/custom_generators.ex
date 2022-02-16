@@ -14,7 +14,6 @@ defmodule Nurse.Test.Generators do
   ]
 
   @health_status [
-    :unknown,
     :starting,
     :healthy,
     :retrying,
@@ -70,6 +69,7 @@ defmodule Nurse.Test.Generators do
 
   def healthcheck() do
     ExUnitProperties.gen all(
+                           name <- name(),
                            health_status <- health_status(),
                            endpoint <- endpoint(),
                            request <- request(),
@@ -81,6 +81,7 @@ defmodule Nurse.Test.Generators do
                            retry_condition <- retry_condition()
                          ) do
       %Nurse.Healthcheck{
+        name: name,
         health_status: health_status,
         endpoint: endpoint,
         request: request,
@@ -125,6 +126,10 @@ defmodule Nurse.Test.Generators do
 
   def hostname(), do: StreamData.binary()
 
+  def method(), do: StreamData.member_of(@http_methods)
+
+  def name(), do: StreamData.atom(:alphanumeric)
+
   def proplist_match() do
     ExUnitProperties.gen all(
                            tuple_key <- StreamData.string(:ascii),
@@ -137,8 +142,6 @@ defmodule Nurse.Test.Generators do
       |> StreamData.member_of()
     end
   end
-
-  def method(), do: StreamData.member_of(@http_methods)
 
   def port(), do: StreamData.integer(0..65535)
 
