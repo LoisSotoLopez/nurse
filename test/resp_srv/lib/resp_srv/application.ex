@@ -4,6 +4,7 @@ defmodule RespSrv.Application do
 
   def start(_type, _args) do
     children = [
+      {RespSrv.Configurator, []},
       {Plug.Cowboy, scheme: :http, plug: RespSrv.Router, options: [port: 8080]}
     ]
 
