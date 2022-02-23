@@ -19,7 +19,7 @@ defmodule Nurse.MixProject do
   def application do
     [
       mod: {Nurse.Application, []},
-      extra_applications: [:crypto, :logger, :runtime_tools, :ex_unit]
+      extra_applications: [:runtime_tools, :logger, :ex_unit, :crypto]
     ]
   end
 
