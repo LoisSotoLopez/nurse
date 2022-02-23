@@ -25,6 +25,7 @@ defmodule RespSrv.Router do
     code = Configurator.get_resp_code()
     body = Configurator.get_resp_body()
     headers = Configurator.get_resp_headers()
+
     put_resp_headers(conn, headers)
     |> send_resp(code, body)
   end
@@ -33,6 +34,7 @@ defmodule RespSrv.Router do
   defp put_resp_headers(conn, []) do
     conn
   end
+
   defp put_resp_headers(conn, [{header_key, header_val} | rest]) do
     Conn.put_resp_header(conn, header_key, header_val)
     |> put_resp_headers(rest)

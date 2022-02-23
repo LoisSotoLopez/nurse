@@ -43,11 +43,12 @@ defmodule RespSrv.Configurator do
   # GenServer callback
   @impl true
   def init(_) do
-    {:ok, %{
-      "code" => 200,
-      "body" => "HelloWorld!",
-      "headers" => []
-    }}
+    {:ok,
+     %{
+       "code" => 200,
+       "body" => "HelloWorld!",
+       "headers" => []
+     }}
   end
 
   @impl true

@@ -23,6 +23,7 @@ defmodule NurseWeb.Client do
     [hc] =
       Nurse.table()
       |> Dets.lookup(id)
+
     hc
   end
 end
