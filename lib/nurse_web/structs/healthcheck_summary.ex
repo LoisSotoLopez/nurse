@@ -15,7 +15,7 @@ defmodule NurseWeb.HealthcheckSummary do
   def new(), do: %NurseWeb.HealthcheckSummary{}
 
   @spec from_tuple({
-          Nurse.id(),
+          Nurse.uuid(),
           Nurse.name(),
           Nurse.health_status(),
           Nurse.scheme(),
@@ -23,7 +23,7 @@ defmodule NurseWeb.HealthcheckSummary do
           Nurse.eport(),
           Nurse.method(),
           Nurse.evaluation_interval()
-        }) :: HealthcheckSummary.t()
+        }) :: t()
   def from_tuple({
         id,
         name,
