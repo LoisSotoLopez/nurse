@@ -72,7 +72,6 @@ defmodule NurseWeb.NewCheckLive do
          HC.get(config, :connection_timeout), HC.get(config, :evaluation_interval),
          HC.get(config, :response_condition), HC.get(config, :response_timeout),
          HC.get(config, :health_condition), HC.get(config, :retry_condition)}
-
         |> Healthcheck.from_tuple()
         |> Client.create()
 
