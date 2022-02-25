@@ -17,8 +17,10 @@ defmodule Nurse.Test.Structs.Healthcheck do
               request <- Generators.request(),
               check_delay <- Generators.check_delay(),
               retry_delay <- Generators.retry_delay(),
+              connection_timeout <- Generators.connection_timeout(),
               evaluation_interval <- Generators.evaluation_interval(),
               response_condition <- Generators.response_condition(),
+              response_timeout <- Generators.response_timeout(),
               health_condition <- Generators.health_condition(),
               retry_condition <- Generators.retry_condition()
             ) do
@@ -29,15 +31,18 @@ defmodule Nurse.Test.Structs.Healthcheck do
           request: request,
           check_delay: check_delay,
           retry_delay: retry_delay,
+          connection_timeout: connection_timeout,
           evaluation_interval: evaluation_interval,
           response_condition: response_condition,
+          response_timeout: response_timeout,
           health_condition: health_condition,
           retry_condition: retry_condition
         }
 
         tuple =
-          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
-           response_condition, health_condition, retry_condition}
+          {name, health_status, endpoint, request, check_delay, retry_delay, connection_timeout,
+           evaluation_interval, response_condition, response_timeout, health_condition,
+           retry_condition}
 
         assert tuple |> Nurse.Healthcheck.from_tuple() == healthcheck
       end
@@ -52,15 +57,18 @@ defmodule Nurse.Test.Structs.Healthcheck do
           request: request,
           check_delay: check_delay,
           retry_delay: retry_delay,
+          connection_timeout: connection_timeout,
           evaluation_interval: evaluation_interval,
           response_condition: response_condition,
+          response_timeout: response_timeout,
           health_condition: health_condition,
           retry_condition: retry_condition
         } = healthcheck
 
         tuple =
-          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
-           response_condition, health_condition, retry_condition}
+          {name, health_status, endpoint, request, check_delay, retry_delay, connection_timeout,
+           evaluation_interval, response_condition, response_timeout, health_condition,
+           retry_condition}
 
         assert Nurse.Healthcheck.to_tuple(healthcheck) == tuple
       end
@@ -81,14 +89,17 @@ defmodule Nurse.Test.Structs.Healthcheck do
               request <- Generators.request(),
               check_delay <- Generators.check_delay(),
               retry_delay <- Generators.retry_delay(),
+              connection_timeout <- Generators.connection_timeout(),
               evaluation_interval <- Generators.evaluation_interval(),
               response_condition <- Generators.response_condition(),
+              response_timeout <- Generators.response_timeout(),
               health_condition <- Generators.health_condition(),
               retry_condition <- Generators.retry_condition()
             ) do
         tuple =
-          {name, health_status, endpoint, request, check_delay, retry_delay, evaluation_interval,
-           response_condition, health_condition, retry_condition}
+          {name, health_status, endpoint, request, check_delay, retry_delay, connection_timeout,
+           evaluation_interval, response_condition, response_timeout, health_condition,
+           retry_condition}
 
         assert tuple == tuple |> Nurse.Healthcheck.from_tuple() |> Nurse.Healthcheck.to_tuple()
       end

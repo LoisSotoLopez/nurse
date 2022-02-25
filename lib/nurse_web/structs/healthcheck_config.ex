@@ -20,7 +20,7 @@ defmodule NurseWeb.HealthcheckConfig do
     :response_condition
   ]
 
-  @type t() :: %NurseWeb.HealthcheckConfig{}
+  @type t :: %NurseWeb.HealthcheckConfig{}
 
   @type key() :: String.t()
 

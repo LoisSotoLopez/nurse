@@ -1,7 +1,5 @@
 defmodule NurseWeb.Client do
-  @server Nurse.Leader
-
-  import Nurse
+  require Nurse
   alias Nurse.Dets
 
   @spec create(Nurse.Healthcheck.t()) :: :ok
@@ -14,15 +12,18 @@ defmodule NurseWeb.Client do
     GenServer.cast(Nurse.Leader, {:remove, id})
   end
 
-  @spec get_all() :: list(Nurse.Healthcheck.t())
+  @spec get_all() :: list(tuple())
   def get_all() do
     Nurse.table()
     |> Dets.table_to_list()
   end
 
-  @spec get(Nurse.uuid()) :: Nurse.Healthcheck.t()
+  @spec get(Nurse.uuid()) :: tuple()
   def get(id) do
-    Nurse.table()
-    |> Dets.get_one(id)
+    [hc] =
+      Nurse.table()
+      |> Dets.lookup(id)
+
+    hc
   end
 end

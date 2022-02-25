@@ -27,6 +27,8 @@ defmodule Nurse.Test.Generators do
 
   def check_delay(), do: StreamData.positive_integer()
 
+  def retry_delay(), do: StreamData.positive_integer()
+
   def code_class(), do: StreamData.integer(1..5)
 
   def code_match() do
@@ -75,8 +77,10 @@ defmodule Nurse.Test.Generators do
                            request <- request(),
                            check_delay <- check_delay(),
                            retry_delay <- retry_delay(),
+                           connection_timeout <- connection_timeout(),
                            evaluation_interval <- evaluation_interval(),
                            response_condition <- response_condition(),
+                           response_timeout <- response_timeout(),
                            health_condition <- health_condition(),
                            retry_condition <- retry_condition()
                          ) do
@@ -87,8 +91,10 @@ defmodule Nurse.Test.Generators do
         request: request,
         check_delay: check_delay,
         retry_delay: retry_delay,
+        connection_timeout: connection_timeout,
         evaluation_interval: evaluation_interval,
         response_condition: response_condition,
+        response_timeout: response_timeout,
         health_condition: health_condition,
         retry_condition: retry_condition
       }
@@ -225,8 +231,6 @@ defmodule Nurse.Test.Generators do
   def response_timeout(), do: StreamData.positive_integer()
 
   def retry_condition(), do: health_condition()
-
-  def retry_delay(), do: StreamData.positive_integer()
 
   def scheme(), do: StreamData.member_of([:http])
 

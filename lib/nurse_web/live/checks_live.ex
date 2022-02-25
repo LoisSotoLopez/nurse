@@ -1,13 +1,10 @@
 defmodule NurseWeb.ChecksLive do
   use NurseWeb, :live_view
 
-  import Phoenix.LiveView.Helpers
-
   require Logger
 
   alias Elixir.List
 
-  alias Nurse.Dets
   alias Nurse.Healthcheck
   alias NurseWeb.HealthcheckSummary
   alias NurseWeb.Client
@@ -16,7 +13,7 @@ defmodule NurseWeb.ChecksLive do
   ### LIVE VIEW MOUNT
   ### ------------------------
 
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     Process.send_after(self(), :update, 5000)
 
     socket =
@@ -61,9 +58,10 @@ defmodule NurseWeb.ChecksLive do
 
   def handle_event(
         "remove_check",
-        %{"check-ref" => check_ref},
+        %{"check-ref" => _check_ref},
         socket
       ) do
+    {:noreply, socket}
   end
 
   ### ------------------------
