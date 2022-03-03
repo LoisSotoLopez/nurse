@@ -10,12 +10,16 @@ defmodule Nurse.Worker do
   @spec start_link(Nurse.uuid()) :: no_return()
   def start_link(id) do
     Logger.info("[worker(#{inspect(id)})] Starting.")
-    id |> read_state() |> run(id)
+    id |> run
   end
 
-  @spec run(Nurse.healthcheck(), Nurse.uuid()) :: no_return()
-  defp run(state, id) do
+  @spec run(Nurse.uuid()) :: no_return()
+  defp run(id) do
     Logger.info("[worker(#{inspect(id)})] Running ...")
+
+    state =
+      id
+      |> read_state
 
     probes =
       1..state.evaluation_interval
@@ -61,8 +65,8 @@ defmodule Nurse.Worker do
     Nurse.table()
     |> Dets.insert({id, self(), new_state})
 
-    new_state
-    |> run(id)
+    id
+    |> run
   end
 
   defp read_state(id) do
