@@ -8,14 +8,12 @@
 <section class="row, container">
   <div id="pannel_head">
     <h3>All Checks Pannel</h3>
-    <div class="page_refresh_time_options">
-      <select id="pannel_refresh_time" class="small_select" value=<%= @pannel_refresh_time%> >
-        <option phx-click="set_refresh" phx-value-refresh-time=1 value=1>Refresh every 1 second</option>
-        <option phx-click="set_refresh" phx-value-refresh-time=3 value=3>Refresh every 3 seconds</option>
-        <option phx-click="set_refresh" phx-value-refresh-time=5 value=5>Refresh every 5 seconds</option>
-        <option phx-click="set_refresh" phx-value-refresh-time=10 value=10>Refresh every 10 seconds</option>
-      </select>
-    </div>
+    <select id="pannel_refresh_time" class="small_select" value=<%= @pannel_refresh_time%> >
+      <option phx-click="set_refresh" phx-value-refresh-time=1 value=1>Refresh every 1 second</option>
+      <option phx-click="set_refresh" phx-value-refresh-time=3 value=3>Refresh every 3 seconds</option>
+      <option phx-click="set_refresh" phx-value-refresh-time=5 value=5>Refresh every 5 seconds</option>
+      <option phx-click="set_refresh" phx-value-refresh-time=10 value=10>Refresh every 10 seconds</option>
+    </select>
   </div>
 </section>
 

@@ -5,32 +5,31 @@ defmodule Nurse.Worker do
   alias Nurse.Healthcheck
 
   require Nurse
+  require Logger
 
-  @spec start_link(Nurse.healthcheck()) :: no_return()
-  def start_link(healthcheck) do
-    run(healthcheck)
+  @spec start_link(Nurse.uuid()) :: no_return()
+  def start_link(id) do
+    Logger.info("[worker(#{inspect(id)})] Starting.")
+    id |> read_state() |> run(id)
   end
 
-  @spec run(Nurse.healthcheck()) :: no_return()
-  defp run(%Nurse.Healthcheck{health_status: :stoppping} = state),
-    do: state |> listen_for_updates() |> run()
+  @spec run(Nurse.healthcheck(), Nurse.uuid()) :: no_return()
+  defp run(state, id) do
+    Logger.info("[worker(#{inspect(id)})] Running ...")
 
-  defp run(state) do
     probes =
-      state.evaluation_interval
+      1..state.evaluation_interval
       |> Enum.map(fn _i ->
-        task =
-          Task.async(fn ->
-            Client.request(
-              state.endpoint,
-              state.request,
-              state.connection_timeout,
-              state.receive_timeout
-            )
-          end)
-
         Process.sleep(state.check_delay)
-        task
+
+        Task.async(fn ->
+          Client.request(
+            state.endpoint,
+            state.request,
+            state.connection_timeout,
+            state.response_timeout
+          )
+        end)
       end)
       |> Enum.map(fn task -> task |> Task.await() end)
       |> Checker.check_responses(state.response_condition)
@@ -56,22 +55,21 @@ defmodule Nurse.Worker do
       end
 
     new_state =
-      state
+      read_state(id)
       |> Healthcheck.update({:health_status, health_status})
-      |> listen_for_updates()
 
     Nurse.table()
-    |> Dets.insert(new_state |> Healthcheck.to_tuple())
+    |> Dets.insert({id, self(), new_state})
 
     new_state
-    |> run()
+    |> run(id)
   end
 
-  defp listen_for_updates(state) do
-    receive do
-      to_update -> state |> Healthcheck.update(to_update) |> listen_for_updates()
-    after
-      1_000 -> state
-    end
+  defp read_state(id) do
+    {_id, _pid, hc} =
+      Nurse.table()
+      |> Dets.lookup(id)
+
+    hc
   end
 end

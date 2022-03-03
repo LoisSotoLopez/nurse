@@ -68,12 +68,6 @@ defmodule NurseWeb.ChecksLive do
   ### INTERNAL FUNCTIONS
   ### ------------------------
 
-  # @spec obtain_check( Nurse.uuid() ) :: HealthcheckSummary.t()
-  # defp obtain_check_summary( id ) do
-  #   Client.get( id )
-  #   |> hc_to_hcsummary
-  # end
-
   @spec remove_check(Nurse.uuid()) :: :ok
   defp remove_check(id) do
     Client.remove(id)

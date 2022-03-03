@@ -7,6 +7,7 @@ defmodule RespSrv.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
+      aliases: aliases(),
       deps: deps()
     ]
   end
@@ -24,6 +25,13 @@ defmodule RespSrv.MixProject do
     [
       {:jason, "~> 1.3.0"},
       {:plug_cowboy, "~> 2.0"}
+    ]
+  end
+
+  # Aliases
+  defp aliases do
+    [
+      run: ["run --no-halt"]
     ]
   end
 end
