@@ -59,7 +59,8 @@ defmodule Nurse.Worker do
       end
 
     new_state =
-      read_state(id)
+      id
+      |> read_state
       |> Healthcheck.update({:health_status, health_status})
 
     Nurse.table()
