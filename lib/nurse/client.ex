@@ -13,7 +13,7 @@ defmodule Nurse.Client do
         connection_timeout \\ 8000,
         response_timeout \\ 5000
       ) do
-    url = Atom.to_string(scheme) <> "://" <> hostname <> ":" <> Integer.to_string(port)
+    url = scheme <> "://" <> hostname <> ":" <> Integer.to_string(port)
 
     case HTTPoison.request(method, url, body, headers, [
            {:timeout, connection_timeout},

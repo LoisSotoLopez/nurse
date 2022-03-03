@@ -1,7 +1,7 @@
 defmodule Nurse.Test.Client do
   use ExUnit.Case, async: true
 
-  @scheme :http
+  @scheme "http"
   @hostname "localhost"
   @port 8081
 

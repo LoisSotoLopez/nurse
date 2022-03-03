@@ -1,5 +1,6 @@
 /* Page update option */
 .page_refresh_time_options{
+    position:relative;
     float:right;
 }
 

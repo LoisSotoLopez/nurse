@@ -18,7 +18,7 @@ defmodule Nurse do
   @type health_status :: :starting | :healthy | :retrying | :unhealthy | :stopped
 
   @type endpoint :: {scheme(), hostname(), eport()}
-  @type scheme :: :http
+  @type scheme :: String.t()
   @type hostname :: binary()
   @type eport :: :inet.port_number()
 

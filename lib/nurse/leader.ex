@@ -1,5 +1,6 @@
 defmodule Nurse.Leader do
   use GenServer
+  require Logger
   alias Nurse.Dets
 
   # -------------------------------------------------------------------------------
@@ -7,6 +8,11 @@ defmodule Nurse.Leader do
   # -------------------------------------------------------------------------------
   def start_link(args) do
     GenServer.start_link(__MODULE__, args, name: __MODULE__)
+  end
+
+  @impl true
+  def terminate(_reason, table) do
+    table |> Dets.close()
   end
 
   # -------------------------------------------------------------------------------
@@ -32,15 +38,21 @@ defmodule Nurse.Leader do
     id = UUID.uuid1()
     row = {id, :undefined, healthcheck}
 
+    Logger.info("[leader] Creating new healthcheck with id #{inspect(id)}")
+
     table
     |> Dets.insert(row)
+
+    table
+    |> start(id)
   end
 
   @spec start(Nurse.table(), Nurse.uuid()) :: :ok | :error
   def start(table, id) do
-    [{id, _old_pid, healthcheck} | _rest] = table |> Dets.lookup(id)
+    {id, _old_pid, healthcheck} = table |> Dets.lookup(id)
 
-    pid = Nurse.Worker |> Kernel.spawn_link(:start_link, [healthcheck])
+    Logger.info("[leader] Starting worker for healthcheck with id #{inspect(id)}")
+    pid = Nurse.Worker |> Kernel.spawn_link(:start_link, [id])
 
     table
     |> Dets.insert({id, pid, healthcheck})
@@ -48,7 +60,9 @@ defmodule Nurse.Leader do
 
   @spec update(Nurse.table(), Nurse.uuid(), Nurse.healthcheck()) :: :ok | :error
   def update(table, id, healthcheck) do
-    [{id, pid, _old_healthcheck} | _rest] = table |> Dets.lookup(id)
+    {id, pid, _old_healthcheck} = table |> Dets.lookup(id)
+
+    Logger.info("[leader] Updating healthcheck with id #{inspect(id)}")
 
     table
     |> Dets.insert({id, pid, healthcheck})
@@ -56,9 +70,11 @@ defmodule Nurse.Leader do
 
   @spec stop(Nurse.table(), Nurse.uuid()) :: :ok | :error
   def stop(table, id) do
-    [{id, pid, old_healthcheck} | _rest] = table |> Dets.lookup(id)
+    {id, pid, old_healthcheck} = table |> Dets.lookup(id)
 
     healthcheck = old_healthcheck |> Nurse.Healthcheck.update({:health_status, :stopped})
+
+    Logger.info("[leader] Stopping worker for healthcheck with id #{inspect(id)}")
 
     pid
     |> Process.exit(:kill)
@@ -73,7 +89,7 @@ defmodule Nurse.Leader do
 
     case lookup do
       :error -> :ok
-      [{_id, :undefined, _healthcheck} | _rest] -> :ok
+      {_id, :undefined, _healthcheck} -> :ok
       _otherwise -> stop(table, id)
     end
 

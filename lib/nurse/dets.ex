@@ -17,11 +17,11 @@ defmodule Nurse.Dets do
     end
   end
 
-  @spec lookup(table(), term()) :: [tuple()] | :error
+  @spec lookup(table(), term()) :: tuple() | :error
   def lookup(table, key) do
     case :dets.lookup(table, key) do
       {:error, _reason} -> :error
-      values -> values
+      [value | _rest] -> value
     end
   end
 
@@ -39,5 +39,13 @@ defmodule Nurse.Dets do
 
     fn x, acc -> [x | acc] end
     |> :dets.foldr([], table)
+  end
+
+  @spec close(table()) :: :ok | :error
+  def close(table) do
+    case :dets.close(table) do
+      {:error, _reason} -> :error
+      _ok -> :ok
+    end
   end
 end

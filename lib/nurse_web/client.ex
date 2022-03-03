@@ -20,10 +20,7 @@ defmodule NurseWeb.Client do
 
   @spec get(Nurse.uuid()) :: tuple()
   def get(id) do
-    [hc] =
-      Nurse.table()
-      |> Dets.lookup(id)
-
-    hc
+    Nurse.table()
+    |> Dets.lookup(id)
   end
 end
