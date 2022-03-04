@@ -102,8 +102,8 @@ defmodule NurseWeb.HealthcheckConfig do
   end
 
   defp to_config(:request_scheme, val)
-       when val == "HTTP" or
-              val == "HTTPS" do
+       when val == "http" or
+              val == "https" do
     val
   end
 
@@ -191,7 +191,7 @@ defmodule NurseWeb.HealthcheckConfig do
   defp to_config(:status_code, status_code) when is_integer(status_code) do
     case status_code do
       n when 100 <= status_code and status_code <= 599 ->
-        {:status_code, n}
+        n
 
       _ ->
         throw({:bad_input, status_code})
@@ -201,7 +201,7 @@ defmodule NurseWeb.HealthcheckConfig do
   defp to_config(:code_class, code_class) when is_integer(code_class) do
     case code_class do
       n when 1 <= n and n <= 5 ->
-        {:code_class, n}
+        n
 
       _ ->
         throw({:bad_input, code_class})
@@ -209,7 +209,7 @@ defmodule NurseWeb.HealthcheckConfig do
   end
 
   defp to_config(:code_regex, regex) do
-    {:code_regex, regex}
+    regex
   end
 
   defp to_config(:proplist_match, proplist_match) when is_map(proplist_match) do
