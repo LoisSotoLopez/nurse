@@ -7,7 +7,7 @@ defmodule Nurse.Test.Checker do
   describe "Nurse.Checker" do
     property "check_responses receives and returns properly typed arguments" do
       check all(
-              responses <- StreamData.list_of(Generators.response()),
+              responses <- StreamData.list_of(Generators.response_tuple()),
               response_condition <- Generators.response_condition()
             ) do
         {successful, failed} = Nurse.Checker.check_responses(responses, response_condition)
