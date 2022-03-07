@@ -53,7 +53,11 @@ defmodule Nurse.MixProject do
   # Aliases
   defp aliases do
     [
-      setup: ["deps.get", "cmd npm install --prefix assets"]
+      setup: ["deps.get", "cmd npm install --prefix assets"],
+      "assets.deploy": [
+        "cmd --cd assets npm run deploy",
+        "phx.digest"
+      ]
     ]
   end
 
