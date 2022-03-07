@@ -22,6 +22,7 @@ defmodule Nurse.Dets do
     case :dets.lookup(table, key) do
       {:error, _reason} -> :error
       [value | _rest] -> value
+      [] -> :error
     end
   end
 
