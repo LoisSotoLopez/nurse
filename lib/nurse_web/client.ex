@@ -14,13 +14,11 @@ defmodule NurseWeb.Client do
 
   @spec get_all() :: list(tuple())
   def get_all() do
-    Nurse.table()
-    |> Dets.table_to_list()
+    GenServer.call(Nurse.Leader, :get_all)
   end
 
   @spec get(Nurse.uuid()) :: tuple()
   def get(id) do
-    Nurse.table()
-    |> Dets.lookup(id)
+    GenServer.call(Nurse.Leader, {:get, id})
   end
 end

@@ -30,6 +30,14 @@ defmodule Nurse.Leader do
     {:noreply, table}
   end
 
+  @impl true
+  def handle_call({:get, id}, _from, table) do
+    table |> get(id)
+  end
+  def handle_call(:get_all, _from, table) do
+    table |> get_all
+  end
+
   # -------------------------------------------------------------------------------
   # Internal exports
   # -------------------------------------------------------------------------------
@@ -95,5 +103,15 @@ defmodule Nurse.Leader do
 
     table
     |> Dets.delete(id)
+  end
+
+  @spec get(Nurse.table, Nurse.uuid()) :: tuple() | :error
+  def get(table, id) do
+    table |> Dets.lookup(id)
+  end
+
+  @spec get_all(Nurse.table) :: list(tuple()) | :error
+  def get_all(table) do
+    table |> Dets.table_to_list()
   end
 end
