@@ -17,7 +17,7 @@ defmodule NurseWeb.Client do
     GenServer.call(Nurse.Leader, :get_all)
   end
 
-  @spec get(Nurse.uuid()) :: tuple()
+  @spec get(Nurse.uuid()) :: tuple() | :error
   def get(id) do
     GenServer.call(Nurse.Leader, {:get, id})
   end
