@@ -1,0 +1,9 @@
+---------------
+Request Headers
+---------------
+
+Description:
+    Headers to be used on the healthcheck request.
+
+Valid values: 
+    Text.

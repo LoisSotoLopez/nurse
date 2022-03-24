@@ -1,0 +1,9 @@
+----------------
+Response timeout
+----------------
+
+Description:
+    Time in milliseconds the checked service has to respond to the check request before nurse considers the check failed.
+
+Valid values: 
+    Possitive integer.

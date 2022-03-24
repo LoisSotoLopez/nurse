@@ -1,0 +1,9 @@
+--------------
+Request method
+--------------
+
+Description:
+    HTTP method to be used on the requests.
+
+Valid values: 
+    Any HTTP method name, i.e.: get, post, put, etc.

@@ -1,0 +1,9 @@
+------------------
+Response condition
+------------------
+
+Description:
+    Response condition to be applied to checks responses to determine if the check succeeded or failed.
+
+Valid values: 
+    Text.

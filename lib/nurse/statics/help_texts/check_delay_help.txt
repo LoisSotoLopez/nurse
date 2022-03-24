@@ -1,0 +1,9 @@
+-----------
+Check Delay
+-----------
+
+Description:
+    Time in milliseconds between sucessive healthcheck requests executions.
+
+Valid values: 
+    Possitive integer.

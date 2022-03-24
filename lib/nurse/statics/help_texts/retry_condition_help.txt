@@ -1,0 +1,9 @@
+---------------
+Retry condition
+---------------
+
+Description:
+    Condition to be applied to the probes result of an evaluation interval to determine wether the check should be retried or not.
+
+Valid values: 
+    Text.

@@ -35,6 +35,7 @@ defmodule Nurse.Leader do
     reply = table |> get(id)
     {:reply, reply, table}
   end
+
   def handle_call(:get_all, _from, table) do
     reply = table |> get_all
     {:reply, reply, table}
@@ -107,12 +108,12 @@ defmodule Nurse.Leader do
     |> Dets.delete(id)
   end
 
-  @spec get(Nurse.table, Nurse.uuid()) :: tuple() | :error
+  @spec get(Nurse.table(), Nurse.uuid()) :: tuple() | :error
   def get(table, id) do
-      table |> Dets.lookup(id)
+    table |> Dets.lookup(id)
   end
 
-  @spec get_all(Nurse.table) :: list(tuple()) | :error
+  @spec get_all(Nurse.table()) :: list(tuple()) | :error
   def get_all(table) do
     table |> Dets.table_to_list()
   end

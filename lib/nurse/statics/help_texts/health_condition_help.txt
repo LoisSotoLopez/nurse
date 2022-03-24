@@ -1,0 +1,10 @@
+-------------------
+Health condition
+-------------------
+
+Description:
+    Condition that determines the health of a service based on a set of probes.
+    The probes are the possitive or negative results of evaluating the response conditions on the responses received on an evaluation interval.
+
+Valid values: 
+    Text
