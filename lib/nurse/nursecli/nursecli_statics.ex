@@ -1,5 +1,5 @@
 defmodule Nurse.NurseCLIStatics do
-  defmacrop statics, do: "lib/nurse/statics/"
+  defmacrop statics, do: "lib/nurse/nursecli/statics/"
   defmacrop help_texts, do: statics() <> "help_texts/"
   defmacrop ask_texts, do: statics() <> "ask_texts/"
 

@@ -62,7 +62,7 @@ defmodule Nurse.NurseCLI do
 
   defp convert_pos_integer(str, key) do
     try do
-      val =
+      {val, _} =
         str
         |> Integer.parse()
 
@@ -93,7 +93,21 @@ defmodule Nurse.NurseCLI do
   end
 
   defp convert_headers(str, _key) do
-    str
+    map_fun =
+      fn header ->
+        [key,value] = header |> String.split(":")
+        {key, value}
+      end
+
+    try do
+      str
+      |> String.trim
+      |> String.split(";")
+      |> Enum.map(map_fun)
+    rescue
+      _ ->
+        throw({:bad_format, :headers, str})
+    end
   end
 
   defp convert_health_condition(str, _key) do
@@ -105,7 +119,15 @@ defmodule Nurse.NurseCLI do
   end
 
   defp convert_response_condition(str, _key) do
-    str
+    try do
+      str
+      |> String.trim
+      |> String.split
+      |> gen_resp_cond_part
+    rescue
+      _ ->
+        throw({:bad_format, :response_condition, str})
+    end
   end
 
   defp default(:undefined, default) do
@@ -114,6 +136,130 @@ defmodule Nurse.NurseCLI do
 
   defp default(str, _default) do
     str
+  end
+
+  defp gen_resp_cond_part(["not" | t]) do
+    {:not, gen_resp_cond_part(t)}
+  end
+  defp gen_resp_cond_part(["and" | t]) do
+    {cond1, cond2} = gen_resp_aggregation_cond(t)
+    {:and, cond1, cond2}
+  end
+  defp gen_resp_cond_part(["or" | t]) do
+    {cond1, cond2} = gen_resp_aggregation_cond(t)
+    {:or, cond1, cond2}
+  end
+  defp gen_resp_cond_part(["status" | t]) do
+    {:status_code_match, gen_resp_code_match(t)}
+  end
+  defp gen_resp_cond_part(["headers" | t]) do
+    {:headers_match, gen_resp_propl_match(t)}
+  end
+  defp gen_resp_cond_part(["body" | t]) do
+    {:body_match, gen_resp_body_match(t)}
+  end
+
+  defp gen_resp_aggregation_cond(l) do
+    [first_cond, second_cond] =
+      l
+      |> split_list(",")
+
+    {gen_resp_cond_part(first_cond), gen_resp_cond_part(second_cond)}
+  end
+
+  defp gen_resp_code_match(["equal" | t]) do
+    int_code =
+      get_int(t)
+    case ( (int_code >= 100) and (int_code <= 599)) do
+      false ->
+        throw({:bad_value, :code_equal, int_code})
+      true ->
+        {:code_equal, int_code}
+    end
+  end
+  defp gen_resp_code_match(["range" | t]) do
+    [range_ini, range_end] = t |> split_list(",")
+    case ( (range_ini >= 100) and (range_ini <= 599) and (range_end >= 100) and (range_end <= 599)) do
+      false ->
+        throw({:bad_value, :code_range, t})
+      true ->
+        {:code_range, get_int(range_ini), get_int(range_end)}
+    end
+  end
+  defp gen_resp_code_match(["class" | t]) do
+    class_int = get_int(t)
+    case ( (class_int >= 1) and (class_int <= 5)) do
+      false ->
+        throw({:bad_value, :code_class, class_int})
+      true ->
+        {:code_class, class_int}
+    end
+  end
+  defp gen_resp_code_match(["regex" | [%Regex{} = r]]) do
+    {:code_regex, r}
+  end
+  defp gen_resp_code_match(["regex" | t]) do
+    throw({:bad_value, :code_regex, t})
+  end
+
+  defp gen_resp_propl_match(["has_key" | [t]]) do
+    {:proplist_has_key, t}
+  end
+  defp gen_resp_propl_match(["has_key" | t]) do
+    throw({:bad_value, :has_key, t})
+  end
+
+  defp gen_resp_propl_match(["contains" | [key | [value]]]) do
+    {:proplist_contains, key, value}
+  end
+  defp gen_resp_propl_match(["contains" | t]) do
+    throw({:bad_value, :contains, t})
+  end
+
+  defp gen_resp_body_match(["is" | [t]]) do
+    {:string_exact, t}
+  end
+  defp gen_resp_body_match(["no_is" | [t]]) do
+    {:string_iexact, t}
+  end
+  defp gen_resp_body_match(["contains" | [t]]) do
+    {:string_contains, t}
+  end
+  defp gen_resp_body_match(["no_contains" | [t]]) do
+    {:string_icontains, t}
+  end
+  defp gen_resp_body_match(["starts_with" | [t]]) do
+    {:string_starts_with, t}
+  end
+  defp gen_resp_body_match(["no_starts_with" | [t]]) do
+    {:string_istarts_with, t}
+  end
+  defp gen_resp_body_match(["ends_with" | [t]]) do
+    {:string_ends_with, t}
+  end
+  defp gen_resp_body_match(["no_ends_with" | [t]]) do
+    {:string_iends_with, t}
+  end
+  defp gen_resp_body_match(["regex" | [%Regex{} = t]]) do
+    {:string_regex, t}
+  end
+  defp gen_resp_body_match(["regex" | [t]]) do
+    {:bad_value, :regex_match, t}
+  end
+  defp gen_resp_body_match([_ | t]) do
+    throw({:bad_format, :body_match, t})
+  end
+
+
+  defp get_int(l) do
+    try do
+      [status_code] = l
+      {value, _} = Integer.parse(status_code)
+      value
+    catch
+      _ ->
+        throw({:bad_format, :one_integer, l})
+    end
   end
 
   @spec gets_healthcheck(list(atom())) :: Nurse.healthcheck()
@@ -191,7 +337,7 @@ defmodule Nurse.NurseCLI do
     try do
       str
       |> convert_pos_integer(field)
-    catch
+    rescue
       _ ->
         IO.puts("Error! Bad value. Printing help")
         field |> help
@@ -252,8 +398,10 @@ defmodule Nurse.NurseCLI do
       str
       |> convert_response_condition(field)
     catch
-      _ ->
-        IO.puts("Error! Bad value. Printing help")
+      {type, field, value} ->
+        :io_lib.format("Error (~p)! Field ~p value ~p",[type, field, value])
+        |> IO.puts
+
         field |> help
         get_hc_field(field)
     end
@@ -372,5 +520,11 @@ defmodule Nurse.NurseCLI do
   ### ------------------------
   ### UTIL FUNCTIONS
   ### ------------------------
+  defp split_list(l, c) do
+    l
+      |> :lists.sublist(2, length(l)-2)
+      |> Enum.chunk_by( fn (split) -> split != c end )
+      |> Enum.reject( fn (split) -> split == [c] end )
+  end
   defp tail([_h | t]), do: t
 end
