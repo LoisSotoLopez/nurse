@@ -1,13 +1,20 @@
 defmodule Nurse.Checker do
   alias Nurse.Condition
 
-  @spec check_responses([Nurse.response()], Nurse.response_condition()) :: Nurse.probes_results()
+  @spec check_responses([{:ok, Nurse.response()} | {:error, any()}], Nurse.response_condition()) ::
+          Nurse.probes_results()
   def check_responses(responses, response_condition) do
     responses
-    |> Enum.reduce({0, 0}, fn response, {successful, failed} ->
-      case Condition.Response.check(response, response_condition) do
-        true -> {successful + 1, failed}
-        _false -> {successful, failed + 1}
+    |> Enum.reduce({0, 0}, fn {result, response}, {successful, failed} ->
+      case result do
+        :ok ->
+          case Condition.Response.check(response, response_condition) do
+            true -> {successful + 1, failed}
+            _false -> {successful, failed + 1}
+          end
+
+        :error ->
+          {successful, failed + 1}
       end
     end)
   end

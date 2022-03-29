@@ -196,6 +196,23 @@ defmodule Nurse.Test.Generators do
     end
   end
 
+  def response_tuple() do
+    ExUnitProperties.gen all(
+                           result <- result(),
+                           status_code <- status_code(),
+                           headers <- headers(),
+                           body <- body()
+                         ) do
+      case result do
+        :ok ->
+          {:ok, {status_code, headers, body}}
+
+        :error ->
+          {:error, :unknown}
+      end
+    end
+  end
+
   def response_aggregation() do
     ExUnitProperties.gen all(
                            response_leaf <- response_leaf(),
@@ -229,6 +246,8 @@ defmodule Nurse.Test.Generators do
   end
 
   def response_timeout(), do: StreamData.positive_integer()
+
+  def result(), do: StreamData.member_of([:ok, :error])
 
   def retry_condition(), do: health_condition()
 

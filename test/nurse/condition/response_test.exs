@@ -7,7 +7,7 @@ defmodule Nurse.Test.Condition.Response do
   describe "Nurse.Condition.Response" do
     property "receives and returns properly typed arguments" do
       check all(
-              response <- Generators.response(),
+              response <- Generators.response_tuple(),
               response_condition <- Generators.response_condition()
             ) do
         assert response |> Nurse.Condition.Response.check(response_condition) |> is_boolean()

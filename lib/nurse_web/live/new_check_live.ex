@@ -24,7 +24,7 @@ defmodule NurseWeb.NewCheckLive do
             { ContentType: application/json }
         request_hostname: "my_server.com"
         request_port: 8080
-        request_scheme: "HTTP"
+        request_scheme: "http"
         response_timeout: 10
         retry_delay: 10
         health_condition: {
