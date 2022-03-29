@@ -3,8 +3,49 @@ Health condition
 -------------------
 
 Description:
-    Condition that determines the health of a service based on a set of probes.
-    The probes are the possitive or negative results of evaluating the response conditions on the responses received on an evaluation interval.
+    Condition that determines the health of a service based 
+    on a set of probes.
 
 Valid values: 
-    Text
+    A health_condition string. health_condition strings are made of
+    health_condition parts (see below) separated by spaces.
+
+health_condition parts:
+    health_condition => health_aggregation | health_leaf
+        - Specifies a health_condition
+
+    health_aggregation =>
+        "not" health_condition
+            - Negation of a health condition
+            
+        "and" "(" health_condition "," health_condition ")"
+        "or" "(" health_condition "," health_condition ")"
+            - And and or aggreagation of health condition
+
+    health_leaf =>
+        "success" pos_integer_match
+            - A condition on the number of successful probes
+
+        "fails" pos_integer_match
+            - A condition on the number of failed probes
+
+    pos_integer_match =>
+        "equals" pos_integer
+        "gt" pos_integer
+        "gte" pos_integer
+        "lt" pos_integer
+        "lte" pos_integer
+        "range" pos_integer pos_integer
+
+    pos_integer =>
+        A number greater than 0.
+
+Examples
+    - success equals 3
+        The number of successful probes need to be = 3
+    - not fails range 2 4
+        The number of failed probes cannot be between 2 and 4
+    - and ( not fails gte 1 , success gte 3)
+        The number of failed probes cannot be greater than or equal to 1 and 
+        the number of successful probes needs to be greater than or equal to
+        3.

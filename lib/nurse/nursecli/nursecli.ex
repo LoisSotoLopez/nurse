@@ -62,7 +62,7 @@ defmodule Nurse.NurseCLI do
 
   defp convert_pos_integer(str, key) do
     try do
-      {val, _} =
+      val =
         str
         |> Integer.parse()
 
@@ -70,9 +70,9 @@ defmodule Nurse.NurseCLI do
         :error ->
           throw({:bad_value, key, str})
 
-        _ ->
-          case val |> Kernel.>(0) do
-            true -> val
+        {parsed, _} ->
+          case parsed |> Kernel.>(0) do
+            true -> parsed
             _ -> throw({:bad_value, key, str})
           end
       end
@@ -99,23 +99,44 @@ defmodule Nurse.NurseCLI do
         {key, value}
       end
 
-    try do
-      str
-      |> String.trim
-      |> String.split(";")
-      |> Enum.map(map_fun)
-    rescue
+    case str do
+      "" ->
+        "";
       _ ->
-        throw({:bad_format, :headers, str})
-    end
+        try do
+          str
+          |> String.trim
+          |> String.split("|")
+          |> Enum.map(map_fun)
+        rescue
+          _ ->
+            throw({:bad_format, :headers, str})
+        end
+      end
   end
 
   defp convert_health_condition(str, _key) do
-    str
+    try do
+      str
+      |> String.trim
+      |> String.split
+      |> gen_health_cond_part
+    rescue
+      _ ->
+        throw({:bad_format, :response_condition, str})
+    end
   end
 
   defp convert_retry_condition(str, _key) do
-    str
+    try do
+      str
+      |> String.trim
+      |> String.split
+      |> gen_health_cond_part
+    rescue
+      _ ->
+        throw({:bad_format, :retry_condition, str})
+    end
   end
 
   defp convert_response_condition(str, _key) do
@@ -131,6 +152,7 @@ defmodule Nurse.NurseCLI do
   end
 
   defp default(:undefined, default) do
+    IO.puts("No value provided. Using default #{default}")
     default
   end
 
@@ -167,7 +189,7 @@ defmodule Nurse.NurseCLI do
     {gen_resp_cond_part(first_cond), gen_resp_cond_part(second_cond)}
   end
 
-  defp gen_resp_code_match(["equal" | t]) do
+  defp gen_resp_code_match(["equals" | t]) do
     int_code =
       get_int(t)
     case ( (int_code >= 100) and (int_code <= 599)) do
@@ -177,8 +199,7 @@ defmodule Nurse.NurseCLI do
         {:code_equal, int_code}
     end
   end
-  defp gen_resp_code_match(["range" | t]) do
-    [range_ini, range_end] = t |> split_list(",")
+  defp gen_resp_code_match(["range" | [range_ini | [range_end]] = t]) do
     case ( (range_ini >= 100) and (range_ini <= 599) and (range_end >= 100) and (range_end <= 599)) do
       false ->
         throw({:bad_value, :code_range, t})
@@ -250,6 +271,51 @@ defmodule Nurse.NurseCLI do
     throw({:bad_format, :body_match, t})
   end
 
+  defp gen_health_cond_part(["not" | t]) do
+    {:not, gen_health_cond_part(t)}
+  end
+  defp gen_health_cond_part(["and" | t]) do
+    {cond1, cond2} = gen_health_aggregation_cond(t)
+    {:and, cond1, cond2}
+  end
+  defp gen_health_cond_part(["or" | t]) do
+    {cond1, cond2} = gen_health_aggregation_cond(t)
+    {:or, cond1, cond2}
+  end
+  defp gen_health_cond_part(["success" | t]) do
+    {:successful_probes_match, gen_health_posint_match(t)}
+  end
+  defp gen_health_cond_part(["fails" | t]) do
+    {:failed_probes_match, gen_health_posint_match(t)}
+  end
+
+  defp gen_health_aggregation_cond(l) do
+    [first_cond, second_cond] =
+      l
+      |> split_list(",")
+
+    {gen_health_cond_part(first_cond), gen_health_cond_part(second_cond)}
+  end
+
+  defp gen_health_posint_match(["equals" | [t]]) do
+    {:pos_integer_equal, t}
+  end
+  defp gen_health_posint_match(["gt" | [t]]) do
+    {:pos_integer_gt, t}
+  end
+  defp gen_health_posint_match(["gte" | [t]]) do
+    {:pos_integer_gte, t}
+  end
+  defp gen_health_posint_match(["lt" | [t]]) do
+    {:pos_integer_lt, t}
+  end
+  defp gen_health_posint_match(["lte" | [t]]) do
+    {:pos_integer_lte, t}
+  end
+  defp gen_health_posint_match(["range" | t]) do
+    {:pos_integer_range, t}
+  end
+
 
   defp get_int(l) do
     try do
@@ -271,13 +337,26 @@ defmodule Nurse.NurseCLI do
 
   @spec get_hc_fields(list(), list()) :: tuple()
   defp get_hc_fields([], acc) do
-    Enum.reverse(acc)
+    [
+      :proplists.get_value(:name, acc),
+      :proplists.get_value(:health_status, acc),
+      :proplists.get_value(:endpoint, acc),
+      :proplists.get_value(:request, acc),
+      :proplists.get_value(:check_delay, acc),
+      :proplists.get_value(:retry_delay, acc),
+      :proplists.get_value(:connection_timeout, acc),
+      :proplists.get_value(:evaluation_interval, acc),
+      :proplists.get_value(:response_condition, acc),
+      :proplists.get_value(:response_timeout, acc),
+      :proplists.get_value(:health_condition, acc),
+      :proplists.get_value(:retry_condition, acc)
+    ]
     |> List.to_tuple()
   end
 
   defp get_hc_fields([key | rest], acc) do
     val = get_hc_field(key)
-    get_hc_fields(rest, [val | acc])
+    get_hc_fields(rest, [{key, val} | acc])
   end
 
   @spec get_ask_text(field :: atom()) :: String.t()
@@ -337,7 +416,7 @@ defmodule Nurse.NurseCLI do
     try do
       str
       |> convert_pos_integer(field)
-    rescue
+    catch
       _ ->
         IO.puts("Error! Bad value. Printing help")
         field |> help
@@ -408,6 +487,7 @@ defmodule Nurse.NurseCLI do
   end
 
   defp maybe_retry(_str, :health_status) do
+    IO.puts("Automatically setting health status to :undefined")
     :undefined
   end
 
@@ -443,7 +523,7 @@ defmodule Nurse.NurseCLI do
 
     text
     |> vsize
-    |> Kernel.+(5)
+    |> Kernel.+(4)
     |> reset_lines
   end
 
@@ -510,7 +590,7 @@ defmodule Nurse.NurseCLI do
   end
 
   defp vsize(text) do
-    text |> String.split("\n") |> length
+    text |> String.split("\n") |> length |> Kernel.+(1)
   end
 
   defp reset_lines(n) do

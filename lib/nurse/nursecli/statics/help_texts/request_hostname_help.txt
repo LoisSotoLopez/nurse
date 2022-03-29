@@ -6,4 +6,4 @@ Description:
     Hostname of the service which health is to be checked
 
 Valid values: 
-    Text.
+    Any value.

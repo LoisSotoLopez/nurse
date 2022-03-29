@@ -6,4 +6,4 @@ Description:
     Healthcheck identifier provided by the user.
 
 Valid values: 
-    Text.
+    Any value. 

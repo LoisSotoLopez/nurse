@@ -6,4 +6,4 @@ Description:
     Literal text to be introduced as healthcheck request body.
 
 Valid values: 
-    Text.
+    Any value.

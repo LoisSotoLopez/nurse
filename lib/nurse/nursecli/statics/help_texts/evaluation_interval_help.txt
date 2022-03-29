@@ -6,6 +6,8 @@ Description:
     Number of requests to execute for each healthcheck comprobation.
     For a given N evaluation interval, N checks will be performed before evaluating the healthcheck health based on those N checks results.
 
+Example:
+    2
 
 Valid values: 
     Possitive integer.

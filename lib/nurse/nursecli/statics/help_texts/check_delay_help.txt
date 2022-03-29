@@ -5,5 +5,8 @@ Check Delay
 Description:
     Time in milliseconds between sucessive healthcheck requests executions.
 
+Example:
+    2
+
 Valid values: 
     Possitive integer.

@@ -1,9 +1,9 @@
------------
-Retry delay
------------
+------
+Scheme
+------
 
 Description:
-    Time in milliseconds between a successful evaluation of the retry conditions and the execution of the consequent check.
+    The protocol scheme for the petition.
 
 Valid values: 
-    Possitive integer.
+    Any value is accepted, but other than http will make the healthcheck execution fail
