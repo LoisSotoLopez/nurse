@@ -1,6 +1,8 @@
 defmodule Nurse.NurseCLI do
+  require Nurse
   alias Nurse.Healthcheck
   alias Nurse.NurseCLIStatics
+  alias Nurse.Leader
 
   ### ------------------------
   ### EXTERNAL FUNCTIONS
@@ -28,12 +30,15 @@ defmodule Nurse.NurseCLI do
     IO.puts("\nCreating a new healthcheck...")
 
     try do
-      tuple =
+      hc =
         Map.keys(Nurse.Healthcheck.__struct__())
         |> tail
         |> gets_healthcheck
 
-      tuple
+      IO.inspect(hc)
+
+      Nurse.table()
+      |> Leader.create(hc)
     catch
       :stop_creation ->
         IO.puts("\nHealthcheck definition stopped by user")
@@ -100,7 +105,7 @@ defmodule Nurse.NurseCLI do
 
     case str do
       "" ->
-        ""
+        []
 
       _ ->
         try do
@@ -578,9 +583,21 @@ defmodule Nurse.NurseCLI do
     |> List.foldl(
       {[], []},
       fn str, {strs, sizes} ->
-        {strs ++ [str], sizes ++ [String.length(str)]}
+        {strs ++ [to_str(str)], sizes ++ [String.length(to_str(str))]}
       end
     )
+  end
+
+  defp to_str(atom) when is_atom(atom) do
+    Atom.to_string(atom)
+  end
+
+  defp to_str(integer) when is_integer(integer) do
+    Integer.to_string(integer, 10)
+  end
+
+  defp to_str(str) do
+    str
   end
 
   @spec print_hc_rows(list({Nurse.uuid(), pid(), Nurse.healthcheck()}) | [:error]) :: :ok
