@@ -93,33 +93,33 @@ defmodule Nurse.NurseCLI do
   end
 
   defp convert_headers(str, _key) do
-    map_fun =
-      fn header ->
-        [key,value] = header |> String.split(":")
-        {key, value}
-      end
+    map_fun = fn header ->
+      [key, value] = header |> String.split(":")
+      {key, value}
+    end
 
     case str do
       "" ->
-        "";
+        ""
+
       _ ->
         try do
           str
-          |> String.trim
+          |> String.trim()
           |> String.split("|")
           |> Enum.map(map_fun)
         rescue
           _ ->
             throw({:bad_format, :headers, str})
         end
-      end
+    end
   end
 
   defp convert_health_condition(str, _key) do
     try do
       str
-      |> String.trim
-      |> String.split
+      |> String.trim()
+      |> String.split()
       |> gen_health_cond_part
     rescue
       _ ->
@@ -130,8 +130,8 @@ defmodule Nurse.NurseCLI do
   defp convert_retry_condition(str, _key) do
     try do
       str
-      |> String.trim
-      |> String.split
+      |> String.trim()
+      |> String.split()
       |> gen_health_cond_part
     rescue
       _ ->
@@ -142,8 +142,8 @@ defmodule Nurse.NurseCLI do
   defp convert_response_condition(str, _key) do
     try do
       str
-      |> String.trim
-      |> String.split
+      |> String.trim()
+      |> String.split()
       |> gen_resp_cond_part
     rescue
       _ ->
@@ -163,20 +163,25 @@ defmodule Nurse.NurseCLI do
   defp gen_resp_cond_part(["not" | t]) do
     {:not, gen_resp_cond_part(t)}
   end
+
   defp gen_resp_cond_part(["and" | t]) do
     {cond1, cond2} = gen_resp_aggregation_cond(t)
     {:and, cond1, cond2}
   end
+
   defp gen_resp_cond_part(["or" | t]) do
     {cond1, cond2} = gen_resp_aggregation_cond(t)
     {:or, cond1, cond2}
   end
+
   defp gen_resp_cond_part(["status" | t]) do
     {:status_code_match, gen_resp_code_match(t)}
   end
+
   defp gen_resp_cond_part(["headers" | t]) do
     {:headers_match, gen_resp_propl_match(t)}
   end
+
   defp gen_resp_cond_part(["body" | t]) do
     {:body_match, gen_resp_body_match(t)}
   end
@@ -190,35 +195,43 @@ defmodule Nurse.NurseCLI do
   end
 
   defp gen_resp_code_match(["equals" | t]) do
-    int_code =
-      get_int(t)
-    case ( (int_code >= 100) and (int_code <= 599)) do
+    int_code = get_int(t)
+
+    case int_code >= 100 and int_code <= 599 do
       false ->
         throw({:bad_value, :code_equal, int_code})
+
       true ->
         {:code_equal, int_code}
     end
   end
+
   defp gen_resp_code_match(["range" | [range_ini | [range_end]] = t]) do
-    case ( (range_ini >= 100) and (range_ini <= 599) and (range_end >= 100) and (range_end <= 599)) do
+    case range_ini >= 100 and range_ini <= 599 and range_end >= 100 and range_end <= 599 do
       false ->
         throw({:bad_value, :code_range, t})
+
       true ->
         {:code_range, get_int(range_ini), get_int(range_end)}
     end
   end
+
   defp gen_resp_code_match(["class" | t]) do
     class_int = get_int(t)
-    case ( (class_int >= 1) and (class_int <= 5)) do
+
+    case class_int >= 1 and class_int <= 5 do
       false ->
         throw({:bad_value, :code_class, class_int})
+
       true ->
         {:code_class, class_int}
     end
   end
+
   defp gen_resp_code_match(["regex" | [%Regex{} = r]]) do
     {:code_regex, r}
   end
+
   defp gen_resp_code_match(["regex" | t]) do
     throw({:bad_value, :code_regex, t})
   end
@@ -226,6 +239,7 @@ defmodule Nurse.NurseCLI do
   defp gen_resp_propl_match(["has_key" | [t]]) do
     {:proplist_has_key, t}
   end
+
   defp gen_resp_propl_match(["has_key" | t]) do
     throw({:bad_value, :has_key, t})
   end
@@ -233,6 +247,7 @@ defmodule Nurse.NurseCLI do
   defp gen_resp_propl_match(["contains" | [key | [value]]]) do
     {:proplist_contains, key, value}
   end
+
   defp gen_resp_propl_match(["contains" | t]) do
     throw({:bad_value, :contains, t})
   end
@@ -240,33 +255,43 @@ defmodule Nurse.NurseCLI do
   defp gen_resp_body_match(["is" | [t]]) do
     {:string_exact, t}
   end
+
   defp gen_resp_body_match(["no_is" | [t]]) do
     {:string_iexact, t}
   end
+
   defp gen_resp_body_match(["contains" | [t]]) do
     {:string_contains, t}
   end
+
   defp gen_resp_body_match(["no_contains" | [t]]) do
     {:string_icontains, t}
   end
+
   defp gen_resp_body_match(["starts_with" | [t]]) do
     {:string_starts_with, t}
   end
+
   defp gen_resp_body_match(["no_starts_with" | [t]]) do
     {:string_istarts_with, t}
   end
+
   defp gen_resp_body_match(["ends_with" | [t]]) do
     {:string_ends_with, t}
   end
+
   defp gen_resp_body_match(["no_ends_with" | [t]]) do
     {:string_iends_with, t}
   end
+
   defp gen_resp_body_match(["regex" | [%Regex{} = t]]) do
     {:string_regex, t}
   end
+
   defp gen_resp_body_match(["regex" | [t]]) do
     {:bad_value, :regex_match, t}
   end
+
   defp gen_resp_body_match([_ | t]) do
     throw({:bad_format, :body_match, t})
   end
@@ -274,17 +299,21 @@ defmodule Nurse.NurseCLI do
   defp gen_health_cond_part(["not" | t]) do
     {:not, gen_health_cond_part(t)}
   end
+
   defp gen_health_cond_part(["and" | t]) do
     {cond1, cond2} = gen_health_aggregation_cond(t)
     {:and, cond1, cond2}
   end
+
   defp gen_health_cond_part(["or" | t]) do
     {cond1, cond2} = gen_health_aggregation_cond(t)
     {:or, cond1, cond2}
   end
+
   defp gen_health_cond_part(["success" | t]) do
     {:successful_probes_match, gen_health_posint_match(t)}
   end
+
   defp gen_health_cond_part(["fails" | t]) do
     {:failed_probes_match, gen_health_posint_match(t)}
   end
@@ -300,22 +329,26 @@ defmodule Nurse.NurseCLI do
   defp gen_health_posint_match(["equals" | [t]]) do
     {:pos_integer_equal, t}
   end
+
   defp gen_health_posint_match(["gt" | [t]]) do
     {:pos_integer_gt, t}
   end
+
   defp gen_health_posint_match(["gte" | [t]]) do
     {:pos_integer_gte, t}
   end
+
   defp gen_health_posint_match(["lt" | [t]]) do
     {:pos_integer_lt, t}
   end
+
   defp gen_health_posint_match(["lte" | [t]]) do
     {:pos_integer_lte, t}
   end
+
   defp gen_health_posint_match(["range" | t]) do
     {:pos_integer_range, t}
   end
-
 
   defp get_int(l) do
     try do
@@ -478,8 +511,8 @@ defmodule Nurse.NurseCLI do
       |> convert_response_condition(field)
     catch
       {type, field, value} ->
-        :io_lib.format("Error (~p)! Field ~p value ~p",[type, field, value])
-        |> IO.puts
+        :io_lib.format("Error (~p)! Field ~p value ~p", [type, field, value])
+        |> IO.puts()
 
         field |> help
         get_hc_field(field)
@@ -602,9 +635,10 @@ defmodule Nurse.NurseCLI do
   ### ------------------------
   defp split_list(l, c) do
     l
-      |> :lists.sublist(2, length(l)-2)
-      |> Enum.chunk_by( fn (split) -> split != c end )
-      |> Enum.reject( fn (split) -> split == [c] end )
+    |> :lists.sublist(2, length(l) - 2)
+    |> Enum.chunk_by(fn split -> split != c end)
+    |> Enum.reject(fn split -> split == [c] end)
   end
+
   defp tail([_h | t]), do: t
 end
