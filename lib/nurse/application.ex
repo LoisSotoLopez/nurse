@@ -2,6 +2,7 @@ defmodule Nurse.Application do
   @moduledoc false
   use Application
 
+  alias Nurse.Nurselog
   require Nurse
 
   def start(_type, _args) do
@@ -16,6 +17,7 @@ defmodule Nurse.Application do
       {Nurse.Leader, Nurse.table()}
     ]
 
+    Nurselog.init
     opts = [strategy: :one_for_one, name: Nurse.Supervisor]
     Supervisor.start_link(children, opts)
   end

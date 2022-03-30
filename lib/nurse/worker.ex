@@ -3,19 +3,19 @@ defmodule Nurse.Worker do
   alias Nurse.Checker
   alias Nurse.Dets
   alias Nurse.Healthcheck
+  alias Nurse.Nurselog
 
   require Nurse
-  require Logger
 
   @spec start_link(Nurse.uuid()) :: no_return()
   def start_link(id) do
-    Logger.info("[worker(#{inspect(id)})] Starting.")
+    Nurselog.info_w("[worker(#{inspect(id)})] Starting.")
     id |> run
   end
 
   @spec run(Nurse.uuid()) :: no_return()
   defp run(id) do
-    Logger.info("[worker(#{inspect(id)})] Running ...")
+    Nurselog.info_w("[worker(#{inspect(id)})] Running ...")
 
     state =
       id
@@ -38,25 +38,35 @@ defmodule Nurse.Worker do
       |> Enum.map(fn task -> task |> Task.await() end)
       |> Checker.check_responses(state.response_condition)
 
+    Nurselog.info_w("[worker(#{inspect(id)})] Probes are #{inspect(probes)}.")
+
     status_candidate =
       probes
       |> Checker.check_health(state.health_condition)
 
+    Nurselog.info_w("[worker(#{inspect(id)})] Status candidate is #{inspect(status_candidate)}.")
+
     health_status =
       case status_candidate do
         :unhealthy ->
+          Nurselog.info_w("[worker(#{inspect(id)})] Therefore doing retry.")
+
           case Checker.check_retry(probes, state.retry_condition) do
             :retrying ->
+              Nurselog.info_w("[worker(#{inspect(id)})] Already retrying. Sleeping now ...")
               Process.sleep(state.retry_delay)
               :retrying
 
             :unhealthy ->
+              Nurselog.info_w("[worker(#{inspect(id)})] Health status is :unhealthy after retry.")
               :unhealthy
           end
 
         :healthy ->
           :healthy
       end
+
+    Nurselog.info_w("[worker(#{inspect(id)})] New health status is #{inspect(health_status)}.")
 
     new_state =
       id
