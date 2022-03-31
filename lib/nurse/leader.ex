@@ -31,13 +31,8 @@ defmodule Nurse.Leader do
   end
 
   @impl true
-  def handle_call({:get, id}, _from, table) do
-    reply = table |> get(id)
-    {:reply, reply, table}
-  end
-
-  def handle_call(:get_all, _from, table) do
-    reply = table |> get_all
+  def handle_call({method, args}, _from, table) do
+    reply = __MODULE__ |> Kernel.apply(method, [table | args])
     {:reply, reply, table}
   end
 
@@ -108,7 +103,7 @@ defmodule Nurse.Leader do
     |> Dets.delete(id)
   end
 
-  @spec get(Nurse.table(), Nurse.uuid()) :: tuple() | :error
+  @spec get(Nurse.table(), Nurse.uuid()) :: tuple | :error
   def get(table, id) do
     table |> Dets.lookup(id)
   end

@@ -84,4 +84,42 @@ defmodule Nurse do
   @type retry_condition :: health_condition()
 
   @type healthcheck :: Nurse.Healthcheck.t()
+
+  # -------------------------------------------------------------------------------
+  # External API
+  # -------------------------------------------------------------------------------
+  @spec create(Nurse.healthcheck()) :: :ok
+  def create(healthcheck) do
+    GenServer.cast(Nurse.Leader, {:create, [healthcheck]})
+  end
+
+  @spec start(Nurse.healthcheck()) :: :ok
+  def start(uuid) do
+    GenServer.cast(Nurse.Leader, {:start, [uuid]})
+  end
+
+  @spec update(Nurse.uuid(), Nurse.healthcheck()) :: :ok
+  def update(uuid, healthcheck) do
+    GenServer.cast(Nurse.Leader, {:update, [uuid, healthcheck]})
+  end
+
+  @spec stop(Nurse.uuid()) :: :ok
+  def stop(uuid) do
+    GenServer.cast(Nurse.Leader, {:stop, [uuid]})
+  end
+
+  @spec delete(Nurse.uuid()) :: :ok
+  def delete(uuid) do
+    GenServer.cast(Nurse.Leader, {:delete, [uuid]})
+  end
+
+  @spec get(Nurse.uuid()) :: tuple | :error
+  def get(uuid) do
+    GenServer.call(Nurse.Leader, {:get, [uuid]})
+  end
+
+  @spec get_all() :: list(tuple | :error) | :error
+  def get_all() do
+    GenServer.call(Nurse.Leader, {:get_all, []})
+  end
 end

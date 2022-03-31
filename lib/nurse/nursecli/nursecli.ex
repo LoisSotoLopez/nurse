@@ -2,7 +2,6 @@ defmodule Nurse.NurseCLI do
   require Nurse
   alias Nurse.Healthcheck
   alias Nurse.NurseCLIStatics
-  alias Nurse.Leader
 
   ### ------------------------
   ### EXTERNAL FUNCTIONS
@@ -14,14 +13,14 @@ defmodule Nurse.NurseCLI do
       IO.gets("Healthcheck id? ")
       |> String.trim()
 
-    [GenServer.call(Nurse.Leader, {:get, id})]
+    [Nurse.get(id)]
     |> print_hc_rows()
   end
 
   def get_healthchecks() do
     IO.puts("\nRetrieving all healthchecks...")
 
-    GenServer.call(Nurse.Leader, :get_all)
+    Nurse.get_all()
     |> print_hc_rows()
   end
 
@@ -37,8 +36,7 @@ defmodule Nurse.NurseCLI do
 
       IO.inspect(hc)
 
-      Nurse.table()
-      |> Leader.create(hc)
+      Nurse.create(hc)
     catch
       :stop_creation ->
         IO.puts("\nHealthcheck definition stopped by user")
@@ -569,6 +567,10 @@ defmodule Nurse.NurseCLI do
     {acc, sizes}
   end
 
+  defp obtain_rows([:error | rest], sizes, acc) do
+    rest |> obtain_rows(sizes, acc)
+  end
+
   defp obtain_rows([row | rest], sizes, acc) do
     {row_strs, actual_sizes} = row |> obtain_row
     new_sizes = actual_sizes |> merge_sizes(sizes, [])
@@ -600,11 +602,7 @@ defmodule Nurse.NurseCLI do
     str
   end
 
-  @spec print_hc_rows(list({Nurse.uuid(), pid(), Nurse.healthcheck()}) | [:error]) :: :ok
-  defp print_hc_rows([:error]) do
-    IO.puts("Not found.")
-  end
-
+  @spec print_hc_rows(list({Nurse.uuid(), pid(), Nurse.healthcheck()} | :error)) :: :ok
   defp print_hc_rows([]) do
     IO.puts("No healthcheck exists.")
   end
