@@ -13,18 +13,22 @@ defmodule RespSrv.Router do
   plug :dispatch
 
   post "/config" do
-    {:ok, _, conn1} = Conn.read_body(conn, opts)
-    body = Map.get(conn1.body_params, "body")
-    code = Map.get(conn1.body_params, "code")
+    body = Map.get(conn.body_params, "body")
+    code = Map.get(conn.body_params, "code")
     Configurator.set_resp_body(body)
     Configurator.set_resp_code(code)
     send_resp(conn, 200, [])
   end
 
   match _ do
+    req_method = conn.method
+    req_url = Conn.request_url(conn)
+
     code = Configurator.get_resp_code()
     body = Configurator.get_resp_body()
     headers = Configurator.get_resp_headers()
+
+    IO.puts("Received " <> req_method <> " on " <> req_url)
 
     put_resp_headers(conn, headers)
     |> send_resp(code, body)

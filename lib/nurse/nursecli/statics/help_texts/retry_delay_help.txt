@@ -1,0 +1,9 @@
+-----------
+Retry delay
+-----------
+
+Description:
+    Time in milliseconds between a successful evaluation of the retry conditions and the execution of the consequent check.
+
+Valid values: 
+    Possitive integer.

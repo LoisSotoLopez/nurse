@@ -1,0 +1,9 @@
+----------------
+Request hostname
+----------------
+
+Description:
+    Hostname of the service which health is to be checked
+
+Valid values: 
+    Any value.

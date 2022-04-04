@@ -1,0 +1,81 @@
+------------------
+Response condition
+------------------
+
+Description:
+    Response condition to be applied to checks responses to determine if the check succeeded or failed.
+
+Valid values: 
+    A response_condition string. response_condition strings are made of
+    response_condition parts (see below) separated by spaces.
+
+response_condition parts:
+    response_condition => response_aggregation | response_leaf
+        - Specifies a response_condition
+
+    response_aggregation =>
+        "not" response_condition
+            - Negation of a response condition
+            
+        "and" "(" response_condition "," response_condition ")"
+        "or" "(" response_condition "," response_condition ")"
+            - And and or aggreagation of response conditions
+
+    response_leaf =>
+        "status" code_match
+            - A response condition based on the response status code
+        
+        "headers" proplist_match
+            - A response condition based on the response headers
+
+        "body" body_match
+            - A response condition based on the response body
+
+    code_match =>
+        "equals" pos_integer
+        "range" pos_integer pos_integer
+        "class" 1..5
+        "regex" <regex>
+            - <regex> is a string with a Perl-like Regular Expresson Syntax
+            as specified in https://www.erlang.org/doc/man/re.html#regexp_syntax
+
+    proplist_match =>
+        "has_key" string
+            - The header with key  string exists in the headers list.
+
+        "contains" string1 string2
+            - The eader with key string1 and value string2 exists in the headers list.
+
+    body_match =>
+        "is" <string>
+            - The body is exactly the <string> string.
+        "no_is" <string>
+            - The body is not exactly the <string> string.
+        "contains" <string>
+            - The body contains the <string> string.
+        "no_contains" <string>
+            - The body does not contain the <string> string.
+        "starts_with" <string>
+            - The body starts with the <string> string.
+        "no_starts_with" <string>
+            - The body does not start with the <string> string.
+        "ends_with" <string>
+            - The body ends with the <string> string.
+        "no_ends_with" <string>
+            - The body does not end with the <string> string.
+        "regex" <string>
+            - The body matches the <string> regular expression. This regular expression is
+            a string with a Perl-like Regular Expresson Syntax as specified 
+            in https://www.erlang.org/doc/man/re.html#regexp_syntax     
+
+    pos_integer =>
+        A number greater than 0.
+
+Examples
+    - not status class 3 5
+        The response status code is not in the range of 3 to 5
+    - not and ( status equals 400 , headers contains Content-type application/json)
+        The response status code is not equal to 400 and the response headers
+        do not include the "Content-type" header with value "application/json"
+    - body no_starts_with Response
+        The response body does not start with the "Response" string.

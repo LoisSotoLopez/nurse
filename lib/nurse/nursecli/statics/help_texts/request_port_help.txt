@@ -1,0 +1,9 @@
+------------
+Request port
+------------
+
+Description:
+    Host port where the checked service is running.
+
+Valid values: 
+    Possitive integer.

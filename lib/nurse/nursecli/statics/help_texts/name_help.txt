@@ -1,0 +1,9 @@
+----------------
+Healthcheck name
+----------------
+
+Description:
+    Healthcheck identifier provided by the user.
+
+Valid values: 
+    Any value. 

@@ -1,0 +1,20 @@
+---------------
+Request Headers
+---------------
+
+Description:
+    Headers to be used on the healthcheck request.
+
+Valid values: 
+    An empty string or a headers string.
+    A headers string is a text of key-value pairs, where each pair is
+    separated by pipes (|) and keys are separated from values by
+    a colon (:).
+
+Examples:
+    <empty> . Just press enter when you get asked to provide a value
+        for the headers.
+    Content-type : application/json
+        - A single header, where key and value are separated by (;)
+    my-header-key : value | Host : developer.mydomain.com
+        - Multiple headers, each one separated from the previous by (|)   

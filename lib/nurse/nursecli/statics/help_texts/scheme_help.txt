@@ -1,0 +1,9 @@
+------
+Scheme
+------
+
+Description:
+    The protocol scheme for the petition.
+
+Valid values: 
+    Any value is accepted, but other than http will make the healthcheck execution fail

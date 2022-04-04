@@ -1,0 +1,12 @@
+------------------
+Connection timeout
+------------------
+
+Description:
+    Time in milliseconds the checked service has to attend the nurse connection before a running check is considered as failed.
+
+Example:
+    2
+    
+Valid values: 
+    Possitive integer.

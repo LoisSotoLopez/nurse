@@ -1,26 +1,23 @@
 defmodule NurseWeb.Client do
   require Nurse
-  alias Nurse.Dets
 
   @spec create(Nurse.Healthcheck.t()) :: :ok
   def create(healthcheck) do
-    GenServer.cast(Nurse.Leader, {:create, [healthcheck]})
+    Nurse.create(healthcheck)
   end
 
   @spec remove(Nurse.uuid()) :: :ok
   def remove(id) do
-    GenServer.cast(Nurse.Leader, {:remove, id})
+    Nurse.delete(id)
   end
 
-  @spec get_all() :: list(tuple())
+  @spec get_all() :: list(tuple() | :error) | :error
   def get_all() do
-    Nurse.table()
-    |> Dets.table_to_list()
+    Nurse.get_all()
   end
 
-  @spec get(Nurse.uuid()) :: tuple()
+  @spec get(Nurse.uuid()) :: tuple() | :error
   def get(id) do
-    Nurse.table()
-    |> Dets.lookup(id)
+    Nurse.get(id)
   end
 end
