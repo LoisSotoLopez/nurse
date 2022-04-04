@@ -78,6 +78,10 @@ defmodule NurseWeb.HealthcheckConfig do
     val
   end
 
+  defp to_config(:request_header, "") do
+    []
+  end
+
   defp to_config(:request_header, val)
        when is_bitstring(val) do
     header_fun = fn str ->
