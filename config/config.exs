@@ -15,6 +15,37 @@ config :nurse, NurseWeb.Endpoint,
   pubsub_server: Nurse.PubSub,
   live_view: [signing_salt: "9R0Ih2eC"]
 
+config :nurse, :logger, [
+  {:handler, :default, :logger_disk_log_h,
+   %{
+     level: :info,
+     config: %{
+       file: './log/nurse',
+       max_no_bytes: 10_585_760,
+       max_no_files: 5
+     },
+     filters: [
+       {:eq_info_filter, {&:logger_filters.domain/2, {:stop, :equal, [:workers]}}}
+     ],
+     filter_default: :log,
+     formatter: {:logger_formatter, %{}}
+   }},
+  {:handler, :workers, :logger_disk_log_h,
+   %{
+     level: :info,
+     config: %{
+       file: './log/nurse_workers',
+       max_no_bytes: 10_585_760,
+       max_no_files: 5
+     },
+     filters: [
+       {:eq_info_filter, {&:logger_filters.domain/2, {:stop, :not_equal, [:workers]}}}
+     ],
+     filter_default: :log,
+     formatter: {:logger_formatter, %{}}
+   }}
+]
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
