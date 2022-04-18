@@ -38,13 +38,9 @@ defmodule Nurse.Worker do
       |> Enum.map(fn task -> task |> Task.await() end)
       |> Checker.check_responses(state.response_condition)
 
-
-    IO.puts("Probes : #{Enum.join(Tuple.to_list(probes))}")
     status_candidate =
       probes
       |> Checker.check_health(state.health_condition)
-
-    IO.puts("#{state.health_status} -> #{status_candidate}")
 
     health_status =
       case status_candidate do

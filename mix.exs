@@ -30,9 +30,11 @@ defmodule Nurse.MixProject do
   defp deps(:test) do
     [{:resp_srv, path: "stubs/resp_srv", runtime: false} | deps()]
   end
+
   defp deps(_) do
     deps()
   end
+
   # Project dependencies.
   defp deps do
     [

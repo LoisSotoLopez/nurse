@@ -39,7 +39,7 @@ defmodule Nurse.Leader do
   # -------------------------------------------------------------------------------
   # Internal exports
   # -------------------------------------------------------------------------------
-  @spec create(Nurse.uuid(), Nurse.table(), Nurse.healthcheck()) :: :ok | :error
+  @spec create(Nurse.table(), Nurse.uuid(), Nurse.healthcheck()) :: :ok | :error
   def create(table, id, healthcheck) do
     row = {id, :undefined, healthcheck}
 

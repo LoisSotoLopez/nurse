@@ -1,7 +1,7 @@
 defmodule NurseWeb.Client do
   require Nurse
 
-  @spec create(Nurse.Healthcheck.t()) :: :ok
+  @spec create(Nurse.Healthcheck.t()) :: Nurse.uuid()
   def create(healthcheck) do
     Nurse.create(healthcheck)
   end
