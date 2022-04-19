@@ -88,9 +88,11 @@ defmodule Nurse do
   # -------------------------------------------------------------------------------
   # External API
   # -------------------------------------------------------------------------------
-  @spec create(Nurse.healthcheck()) :: :ok
+  @spec create(Nurse.healthcheck()) :: Nurse.uuid()
   def create(healthcheck) do
-    GenServer.cast(Nurse.Leader, {:create, [healthcheck]})
+    id = UUID.uuid1()
+    GenServer.cast(Nurse.Leader, {:create, [id, healthcheck]})
+    id
   end
 
   @spec start(Nurse.healthcheck()) :: :ok

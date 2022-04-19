@@ -16,7 +16,8 @@ defmodule RespSrv.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {RespSrv.Application, []}
+      mod: {RespSrv.Application, []},
+      env: [port: 8080]
     ]
   end
 

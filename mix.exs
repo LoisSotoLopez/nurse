@@ -11,7 +11,7 @@ defmodule Nurse.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       dialyzer: dialyzer(),
-      deps: deps()
+      deps: deps(Mix.env())
     ]
   end
 
@@ -27,6 +27,14 @@ defmodule Nurse.MixProject do
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
+  defp deps(:test) do
+    [{:resp_srv, path: "stubs/resp_srv", runtime: false} | deps()]
+  end
+
+  defp deps(_) do
+    deps()
+  end
+
   # Project dependencies.
   defp deps do
     [
@@ -36,6 +44,7 @@ defmodule Nurse.MixProject do
       {:floki, ">= 0.30.0", only: :test},
       {:gettext, "~> 0.11"},
       {:httpoison, "~> 1.8"},
+      {:poison, "~> 5.0"},
       {:jason, "~> 1.0"},
       {:phoenix, "~> 1.5.12"},
       {:phoenix_html, "~> 2.11"},
@@ -57,7 +66,8 @@ defmodule Nurse.MixProject do
       "assets.deploy": [
         "cmd --cd assets npm run deploy",
         "phx.digest"
-      ]
+      ],
+      test_worker: ["cmd MIX_ENV=test mix test test/nurse/worker_test.exs"]
     ]
   end
 
